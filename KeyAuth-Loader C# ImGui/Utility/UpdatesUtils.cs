@@ -1,13 +1,10 @@
 ﻿using ImGuiNET;
-using KeyAuth.Renderer;
 using System.Diagnostics;
-using System.Net;
 
 namespace KeyAuth.Utility
 {
     public class UpdatesUtils (api keyAuth)
     {
-        
         public void AutoUpdate(ref bool isUpdateAvailable)
         {
             if (keyAuth.response.message == "invalidver")

@@ -1,5 +1,4 @@
-﻿
-using KeyAuth.Utility;
+﻿using KeyAuth.Utility;
 using Newtonsoft.Json.Linq;
 
 namespace KeyAuth.Credentials;
@@ -14,6 +13,7 @@ public class CredentialService
     public CredentialService()
     {
         var jsonUtils = new JsonUtils();
+
         key = jsonUtils.ReadFromJson(FilePath, "license");
         username = jsonUtils.ReadFromJson(FilePath, "username");
         password = jsonUtils.ReadFromJson(FilePath, "password");

@@ -9,15 +9,19 @@ namespace KeyAuth.Utility
         public string systemMessage = "";
         public void CheckAndAutoLogin()
         {
-            switch (string.IsNullOrEmpty(credentialService.key))
+            if (!string.IsNullOrEmpty(credentialService.key))
             {
-                case false:
-                    keyAuth.license(credentialService.key);
-                    break;
-                default:
-                    keyAuth.login(credentialService.username, credentialService.password);
-                    break;
+                keyAuth.license(credentialService.key);
             }
+            else if (!string.IsNullOrEmpty(credentialService.username) && !string.IsNullOrEmpty(credentialService.password))
+            {
+                keyAuth.login(credentialService.username, credentialService.password);
+            }
+            else
+            {
+                return;
+            }
+
 
             if (!keyAuth.response.success)
             {
