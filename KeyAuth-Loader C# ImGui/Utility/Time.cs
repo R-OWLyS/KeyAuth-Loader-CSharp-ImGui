@@ -1,19 +1,16 @@
-﻿namespace KeyAuth.Utility
+﻿namespace KeyAuth.Utility;
+
+public static class TimeClock
 {
-    public static class TimeClock
+    public static DateTime UnixTimeToDateTime(long unixtime)
     {
-        public static DateTime UnixTimeToDateTime(long unixtime)
+        try
         {
-            DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Local);
-            try
-            {
-                dtDateTime = dtDateTime.AddSeconds(unixtime).ToLocalTime();
-            }
-            catch
-            {
-                dtDateTime = DateTime.MaxValue;
-            }
-            return dtDateTime;
+            return DateTimeOffset.FromUnixTimeSeconds(unixtime).LocalDateTime;
+        }
+        catch
+        {
+            return DateTime.MaxValue;
         }
     }
 }

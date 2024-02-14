@@ -5,15 +5,16 @@ using System.Net;
 
 namespace KeyAuth.Utility
 {
-    public class UpdatesUtils
+    public class UpdatesUtils (api keyAuth)
     {
-        public void autoUpdate(ref bool isUpdateAvailable)
+        
+        public void AutoUpdate(ref bool isUpdateAvailable)
         {
-            if (Program.KeyAuthApp.response.message == "invalidver")
+            if (keyAuth.response.message == "invalidver")
             {
-                Program.KeyAuthApp.response.message = "Invalid Client Version Detected";
+                keyAuth.response.message = "Invalid Client Version Detected";
 
-                if (!string.IsNullOrEmpty(Program.KeyAuthApp.app_data.downloadLink))
+                if (!string.IsNullOrEmpty(keyAuth.app_data.downloadLink))
                 {
                     isUpdateAvailable = true;
                 }
@@ -31,7 +32,7 @@ namespace KeyAuth.Utility
             {
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = Program.KeyAuthApp.app_data.downloadLink,
+                    FileName = keyAuth.app_data.downloadLink,
                     UseShellExecute = true
                 });
                 Environment.Exit(0);
@@ -42,25 +43,33 @@ namespace KeyAuth.Utility
             }
         }
 
-        public void PerformAutoUpdate()
+        public async void PerformAutoUpdate()
         {
-            WebClient webClient = new WebClient();
-            string destFile = Application.ExecutablePath;
-
-            string rand = Randomize.TextString();
-
-            destFile = Path.Combine(Path.GetDirectoryName(destFile), $"{rand}.exe");
-            webClient.DownloadFile(Program.KeyAuthApp.app_data.downloadLink, destFile);
-
-            Process.Start(destFile);
-            Process.Start(new ProcessStartInfo()
+            try
             {
-                Arguments = "/C choice /C Y /N /D Y /T 3 & Del \"" + Application.ExecutablePath + "\"",
-                WindowStyle = ProcessWindowStyle.Hidden,
-                CreateNoWindow = true,
-                FileName = "cmd.exe"
-            });
-            Environment.Exit(0);
+                string destFile = Application.ExecutablePath;
+                string rand = Guid.NewGuid().ToString();
+                destFile = Path.Combine(Path.GetDirectoryName(destFile) ?? string.Empty, $"{rand}.exe");
+
+                using HttpClient client = new HttpClient();
+                byte[] data = await client.GetByteArrayAsync(keyAuth.app_data.downloadLink);
+                await File.WriteAllBytesAsync(destFile, data);
+
+                Process.Start(destFile);
+                Process.Start(new ProcessStartInfo
+                {
+                    Arguments = $"/C choice /C Y /N /D Y /T 3 & Del \"{Application.ExecutablePath}\"",
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true,
+                    FileName = "cmd.exe"
+                });
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
         }
     }
 }
