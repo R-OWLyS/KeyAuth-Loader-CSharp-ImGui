@@ -1,5 +1,7 @@
 ﻿using ImGuiNET;
 using System.Diagnostics;
+using System.Drawing.Text;
+using System.Runtime.CompilerServices;
 
 namespace KeyAuth.Utility
 {
@@ -7,12 +9,19 @@ namespace KeyAuth.Utility
     {
         public void AutoUpdate(ref bool isUpdateAvailable)
         {
+            string filePath = "credentials.json";
+
             if (keyAuth.response.message == "invalidver")
             {
                 keyAuth.response.message = "Invalid Client Version Detected";
 
                 if (!string.IsNullOrEmpty(keyAuth.app_data.downloadLink))
                 {
+                    if (File.Exists(filePath)) 
+                    {
+                        File.Delete(filePath);
+                        RestartApplication();
+                    }
                     isUpdateAvailable = true;
                 }
                 else
@@ -21,6 +30,16 @@ namespace KeyAuth.Utility
                     Environment.Exit(0);
                 }
             }
+        }
+
+        private void RestartApplication()
+        {
+            Process.Start(new ProcessStartInfo
+            {
+                FileName = Application.ExecutablePath,
+                UseShellExecute = true
+            });
+            Environment.Exit(0);
         }
 
         public void PerformUpdate()
@@ -33,12 +52,14 @@ namespace KeyAuth.Utility
                     UseShellExecute = true
                 });
                 Environment.Exit(0);
+
             }
             catch (Exception ex)
             {
                 ImGui.Text($"An error occurred while trying to open the URL: {ex.Message}");
             }
         }
+
 
         public async void PerformAutoUpdate()
         {

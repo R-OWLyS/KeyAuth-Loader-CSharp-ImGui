@@ -16,7 +16,3 @@ class Program
         await keyAuthOverlay.Run();
     }
 }
-
-class ProgramImpl : Program
-{
-}
