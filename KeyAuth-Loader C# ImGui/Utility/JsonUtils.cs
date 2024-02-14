@@ -7,12 +7,12 @@ namespace KeyAuth.Utility
         public string ReadFromJson(string path, string section)
         {
             if (!File.Exists(path))
-                return "File Not Found";
+                return "";
 
-            string jsonData = File.ReadAllText(path);
-            JObject data = JObject.Parse(jsonData);
+            var jsonData = File.ReadAllText(path);
+            var data = JObject.Parse(jsonData);
 
-            return (string)data[section];
+            return data[section]?.ToString()??"";
         }
 
         public bool CheckIfJsonKeyExists(string path, string section)
@@ -20,8 +20,8 @@ namespace KeyAuth.Utility
             if (!File.Exists(path))
                 return false;
 
-            string jsonData = File.ReadAllText(path);
-            JObject data = JObject.Parse(jsonData);
+            var jsonData = File.ReadAllText(path);
+            var data = JObject.Parse(jsonData);
 
             return data.ContainsKey(section);
         }

@@ -1,107 +1,78 @@
 ﻿using ImGuiNET;
-using KeyAuth.Renderer;
-using Newtonsoft.Json.Linq;
+using KeyAuth.Credentials;
 
 namespace KeyAuth.Utility
 {
-    public class AuthUtils
+    public class AuthUtils(CredentialService credentialService, api keyAuth)
     {
-        JsonUtils jsonUtils = new JsonUtils();
-        public void CheckAndAutoLogin(KeyAuth_Renderer keyAuth)
+        public bool isLoginSuccessful;
+        public string systemMessage = "";
+        public void CheckAndAutoLogin()
         {
-            string filePath = "credentials.json";
-
-            if (File.Exists(filePath))
+            switch (string.IsNullOrEmpty(credentialService.key))
             {
-                if (!jsonUtils.CheckIfJsonKeyExists(filePath, "username"))
-                {
-                    keyAuth.key = jsonUtils.ReadFromJson(filePath, "license");
-                    Program.KeyAuthApp.license(keyAuth.key);
-
-                    if (!Program.KeyAuthApp.response.success)
-                    {
-                        File.Delete(filePath);
-                        keyAuth.systemMessage = "\nStatus: " + Program.KeyAuthApp.response.message;
-                    }
-                    else
-                    {
-                        Program.KeyAuthApp.response.message = "Logged In (Auto-Login)";
-                        keyAuth.isLoginSuccessful = true;
-                    }
-
-                }
-                else
-                {
-                    keyAuth.username = jsonUtils.ReadFromJson(filePath, "username");
-                    keyAuth.password = jsonUtils.ReadFromJson(filePath, "password");
-
-                    Program.KeyAuthApp.login(keyAuth.username, keyAuth.password);
-
-                    if (!Program.KeyAuthApp.response.success)
-                    {
-                        File.Delete(filePath);
-                        Environment.Exit(0);
-                    }
-                    else
-                    {
-                        Program.KeyAuthApp.response.message = "Logged In (Auto-Login)";
-                        keyAuth.isLoginSuccessful = true;
-                    }
-                }
+                case false:
+                    keyAuth.license(credentialService.key);
+                    break;
+                default:
+                    keyAuth.login(credentialService.username, credentialService.password);
+                    break;
             }
-        }
 
-        public void PerformLogin(KeyAuth_Renderer keyAuth)
-        {
-            Program.KeyAuthApp.login(keyAuth.username, keyAuth.password);
-
-            if (!Program.KeyAuthApp.response.success)
+            if (!keyAuth.response.success)
             {
-                ImGui.Text($"Status: {Program.KeyAuthApp.response.message}");
+                credentialService.ClearCredentials();
+                systemMessage = "\nStatus: " + keyAuth.response.message;
             }
             else
             {
-                JObject userCred = new JObject(
-                    new JProperty("username", keyAuth.username),
-                    new JProperty("password", keyAuth.password),
-                    new JProperty("license", keyAuth.key),
-                    new JProperty("email", keyAuth.email)
-                );
-
-                string filePath = "credentials.json";
-                File.WriteAllText(filePath, userCred.ToString());
-
-                keyAuth.isLoginSuccessful = true;
+                keyAuth.response.message = "Logged In (Auto-Login)";
+                isLoginSuccessful = true;
             }
         }
 
-        public void PerformLicenseLogin(KeyAuth_Renderer keyAuth)
+        public void PerformLogin()
         {
-            Program.KeyAuthApp.license(keyAuth.key);
+            keyAuth.login(credentialService.username, credentialService.password);
 
-            if (!Program.KeyAuthApp.response.success)
+            if (!keyAuth.response.success)
             {
-                ImGui.Text($"Status: {Program.KeyAuthApp.response.message}");
+                ImGui.Text($"Status: {keyAuth.response.message}");
             }
             else
             {
-                keyAuth.isLoginSuccessful = true;
+                credentialService.SaveCredentials();
+                isLoginSuccessful = true;
             }
         }
 
-        public void PerformRegisterUser(KeyAuth_Renderer keyAuth)
+        public void PerformLicenseLogin()
         {
-            Program.KeyAuthApp.register(keyAuth.username, keyAuth.password, keyAuth.key, keyAuth.email);
+            keyAuth.license(credentialService.key);
 
-            if (!Program.KeyAuthApp.response.success)
+            if (!keyAuth.response.success)
             {
-                ImGui.Text($"Status: {Program.KeyAuthApp.response.message}");
+                ImGui.Text($"Status: {keyAuth.response.message}");
             }
             else
             {
-                keyAuth.tab = 0;
-                Program.KeyAuthApp.response.message = "User Registered Successfully!";
+                isLoginSuccessful = true;
             }
+        }
+
+        public bool PerformRegisterUser()
+        {
+            keyAuth.register(credentialService.username, credentialService.password, credentialService.key, credentialService.email);
+
+            if (!keyAuth.response.success)
+            {
+                ImGui.Text($"Status: {keyAuth.response.message}");
+                return false;
+            }
+            
+            keyAuth.response.message = "User Registered Successfully!";
+            return true;
+            
         }
     }
 }
