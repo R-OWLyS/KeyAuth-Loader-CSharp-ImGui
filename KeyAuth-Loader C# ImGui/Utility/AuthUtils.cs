@@ -57,6 +57,7 @@ namespace KeyAuth.Utility
             else
             {
                 isLoginSuccessful = true;
+                credentialService.SaveCredentials();
             }
         }
 
@@ -71,6 +72,7 @@ namespace KeyAuth.Utility
             }
             
             keyAuth.response.message = "User Registered Successfully!";
+            credentialService.SaveCredentials();
             return true;
             
         }
