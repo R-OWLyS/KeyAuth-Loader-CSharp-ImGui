@@ -45,7 +45,7 @@ namespace KeyAuth.Renderer
 
         protected override void Render()
         {
-            ImGui.Begin("KeyAuth - Loader C#",ref isLoaderShown,ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse);
+            ImGui.Begin("KeyAuth - Loader C#", ref isLoaderShown,ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse);
 
             ImGui.Text($"Built at:");
             ImGui.SameLine();
