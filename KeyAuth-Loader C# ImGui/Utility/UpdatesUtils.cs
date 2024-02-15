@@ -24,16 +24,6 @@ namespace KeyAuth.Utility
             return false;
         }
 
-        private void RestartApplication()
-        {
-            Process.Start(new ProcessStartInfo
-            {
-                FileName = Application.ExecutablePath,
-                UseShellExecute = true
-            });
-            Environment.Exit(0);
-        }
-
         public void PerformUpdate()
         {
             try
