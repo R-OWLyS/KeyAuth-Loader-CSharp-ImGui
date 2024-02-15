@@ -5,7 +5,7 @@ namespace KeyAuth.Utility
 {
     public static class VerticalTabBar
     {
-        public static int Render(string[] tabNames,ref int tab)
+        public static void Render(string[] tabNames,ref int tab)
         {
 
             ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 1.0f);
@@ -16,7 +16,6 @@ namespace KeyAuth.Utility
                     tab = i;
 
             ImGui.PopStyleVar(2);
-            return tab;
         }
     }
 }
