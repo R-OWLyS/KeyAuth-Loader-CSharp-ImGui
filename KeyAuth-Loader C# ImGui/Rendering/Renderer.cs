@@ -23,7 +23,10 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         ReplaceFont(@"C:\Windows\Fonts\segoeuib.ttf", 16, FontGlyphRangeType.English);
         keyAuth.init();
         _isUpdateAvailable = _updatesUtils.AutoUpdate();
-        _authUtils.CheckAndAutoLogin();
+        if (!_isUpdateAvailable)
+        {
+            _authUtils.CheckAndAutoLogin();
+        }
         return Task.CompletedTask;
     }
 
@@ -51,7 +54,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
             ImGui.SameLine();
             ImGui.TextColored(Colors.defaultGreen, keyAuth.response.message);
         }
-
+        ImGui.Spacing();
         if (!string.IsNullOrEmpty(_authUtils.systemMessage))
         {
             ImGui.Separator();

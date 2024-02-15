@@ -1,7 +1,5 @@
 ﻿using ImGuiNET;
 using System.Diagnostics;
-using System.Drawing.Text;
-using System.Runtime.CompilerServices;
 
 namespace KeyAuth.Utility
 {
@@ -9,19 +7,12 @@ namespace KeyAuth.Utility
     {
         public bool AutoUpdate()
         {
-            string filePath = "credentials.json";
-
             if (keyAuth.response.message == "invalidver")
             {
                 keyAuth.response.message = "Invalid Client Version Detected";
 
                 if (!string.IsNullOrEmpty(keyAuth.app_data.downloadLink))
                 {
-                    if (File.Exists(filePath))
-                    {
-                        File.Delete(filePath);
-                        RestartApplication();
-                    }
                     return true;
                 }
                 else
