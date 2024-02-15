@@ -5,19 +5,18 @@ namespace KeyAuth.Utility
 {
     public static class VerticalTabBar
     {
-        public static int Render(string[] tabNames)
+        public static int Render(string[] tabNames,ref int tab)
         {
-            var _tab = 0;
 
             ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 1.0f);
             ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0.0f);
 
             for (var i = 0; i < tabNames.Length; ++i)
                 if (ImGui.Button(tabNames[i], new Vector2(-1, 30)))
-                    _tab = i;
+                    tab = i;
 
             ImGui.PopStyleVar(2);
-            return _tab;
+            return tab;
         }
     }
 }

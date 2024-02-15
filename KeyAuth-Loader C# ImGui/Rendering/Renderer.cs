@@ -35,7 +35,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     {
         ImGui.Begin("KeyAuth - Loader C#", ref _isLoaderShown,ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse);
 
-        _tab = VerticalTabBar.Render(tabNames);
+        VerticalTabBar.Render(tabNames,ref _tab);
 
         ImGui.Text($"Built at:");
         ImGui.SameLine();
