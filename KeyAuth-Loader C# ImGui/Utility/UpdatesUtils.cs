@@ -7,7 +7,7 @@ namespace KeyAuth.Utility
 {
     public class UpdatesUtils (api keyAuth)
     {
-        public void AutoUpdate(ref bool isUpdateAvailable)
+        public bool AutoUpdate()
         {
             string filePath = "credentials.json";
 
@@ -17,12 +17,12 @@ namespace KeyAuth.Utility
 
                 if (!string.IsNullOrEmpty(keyAuth.app_data.downloadLink))
                 {
-                    if (File.Exists(filePath)) 
+                    if (File.Exists(filePath))
                     {
                         File.Delete(filePath);
                         RestartApplication();
                     }
-                    isUpdateAvailable = true;
+                    return true;
                 }
                 else
                 {
@@ -30,6 +30,7 @@ namespace KeyAuth.Utility
                     Environment.Exit(0);
                 }
             }
+            return false;
         }
 
         private void RestartApplication()

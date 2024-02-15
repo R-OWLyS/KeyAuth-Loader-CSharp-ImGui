@@ -8,7 +8,7 @@ namespace KeyAuth.Rendering;
 
 public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 {
-    private bool _isUpdateAvailable;
+    private bool _isUpdateAvailable = false;
     private bool _isLoaderShown = true;
     private int _tab;
 
@@ -22,7 +22,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         Style.SetStyle();
         ReplaceFont(@"C:\Windows\Fonts\segoeuib.ttf", 16, FontGlyphRangeType.English);
         keyAuth.init();
-        _updatesUtils.AutoUpdate(ref _isUpdateAvailable);
+        _isUpdateAvailable = _updatesUtils.AutoUpdate();
         _authUtils.CheckAndAutoLogin();
         return Task.CompletedTask;
     }
