@@ -8,7 +8,7 @@ namespace KeyAuth.Rendering;
 
 public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 {
-    private bool _isUpdateAvailable = false;
+    private bool _isUpdateAvailable;
     private bool _isLoaderShown = true;
     private int _tab;
 
@@ -16,6 +16,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 
     private readonly UpdatesUtils _updatesUtils = new(keyAuth);
     private readonly AuthUtils _authUtils = new(credentialService,keyAuth);
+    private static readonly string[] tabNames = { "Main", "Credentials", "License", "Register", "Update" };
 
     protected override Task PostInitialized()
     { 
@@ -33,6 +34,8 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     protected override void Render()
     {
         ImGui.Begin("KeyAuth - Loader C#", ref _isLoaderShown,ImGuiWindowFlags.AlwaysAutoResize | ImGuiWindowFlags.NoCollapse);
+
+        _tab = VerticalTabBar.Render(tabNames);
 
         ImGui.Text($"Built at:");
         ImGui.SameLine();
@@ -62,28 +65,23 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
             ImGui.Separator();
         }
 
-        if (!_isUpdateAvailable)
+        switch (_tab)
         {
-            RenderMenuButtons();
-        }
-        else
-        {
-            RenderUpdateTab();
-        }
-
-        if (_tab == 1)
-        {
-            RenderCredentialsTab();
-        }
-
-        if (_tab == 2)
-        {
-            RenderLicenseTab();
-        }
-
-        if (_tab == 3)
-        {
-            RenderRegisterTab();
+            case 1:
+                RenderCredentialsTab();
+                break;
+            case 2:
+                RenderLicenseTab();
+                break;
+            case 3:
+                RenderRegisterTab();
+                break;
+            case 4:
+                RenderUpdateTab();
+                break;
+            default:
+                RenderMenuButtons();
+                break;
         }
 
         if (_authUtils.isLoginSuccessful)
