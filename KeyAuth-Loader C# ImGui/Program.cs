@@ -11,7 +11,8 @@ class Program
             ownerid: "",
             secret: "",
             version: ""
-        );
+            );
+
         var keyAuthOverlay = new Rendering.Renderer(keyAuthApp,new CredentialService());
         await keyAuthOverlay.Run();
     }
