@@ -7,7 +7,7 @@ class Program
     static async Task Main(string[] args)
     {
         var keyAuthApp = new api(
-            name: "",
+            name: "ariana",
             ownerid: "",
             secret: "",
             version: ""
