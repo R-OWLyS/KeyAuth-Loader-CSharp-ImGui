@@ -23,7 +23,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     protected override Task PostInitialized()
     { 
         Style.SetStyle();
-        ReplaceFont(@"C:\Windows\Fonts\segoeuib.ttf", 16, FontGlyphRangeType.English);
+        ReplaceFont(@"C:\Windows\Fonts\NirmalaB.ttf", 16, FontGlyphRangeType.English);
         keyAuth.init();
         _isUpdateAvailable = _updatesUtils.AutoUpdate();
         if (!_isUpdateAvailable)
