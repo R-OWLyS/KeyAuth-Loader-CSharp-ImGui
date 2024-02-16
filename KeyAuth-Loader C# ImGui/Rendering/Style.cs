@@ -12,7 +12,7 @@ namespace KeyAuth.Renderer
             style.WindowPadding = new Vector2(11, 11);
             style.WindowRounding = 5.0f;
             style.FramePadding = new Vector2(4, 4);
-            style.FrameRounding = 3.0f;
+            style.FrameRounding = 2.0f;
             style.ItemSpacing = new Vector2(9, 5);
             style.ItemInnerSpacing = new Vector2(5, 4);
             style.IndentSpacing = 21.0f;

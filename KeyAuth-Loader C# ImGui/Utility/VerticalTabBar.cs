@@ -9,7 +9,7 @@ namespace KeyAuth.Utility
         {
 
             ImGui.PushStyleVar(ImGuiStyleVar.FrameBorderSize, 1.0f);
-            ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 0.0f);
+            ImGui.PushStyleVar(ImGuiStyleVar.FrameRounding, 2.0f);
 
             for (var i = 0; i < tabNames.Length; ++i)
                 if (ImGui.Button(tabNames[i], new Vector2(-1, 30)))
