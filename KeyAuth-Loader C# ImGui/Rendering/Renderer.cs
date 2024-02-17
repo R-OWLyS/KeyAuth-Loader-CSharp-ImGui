@@ -4,11 +4,19 @@ using KeyAuth.Credentials;
 using KeyAuth.Renderer;
 using KeyAuth.Utility;
 using System.Numerics;
+using KeyAuth.Theme;
 
 namespace KeyAuth.Rendering;
 
 public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 {
+    public enum ImGuiStyleType
+    {
+        Default,
+        ComfyTheme,
+        DarculaTheme
+    }
+    
     private bool _isUpdateAvailable;
     private bool _isLoaderShown = true;
     private int _tab;
@@ -17,12 +25,14 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 
     private readonly UpdatesUtils _updatesUtils = new(keyAuth);
     private readonly AuthUtils _authUtils = new(credentialService,keyAuth);
+    
+    private ImGuiStyleType _selectedStyle = ImGuiStyleType.Default;
 
     private readonly string[] _tabNames = { "Credentials Login", "License Login", "Register User" };
 
     protected override Task PostInitialized()
     { 
-        Style.SetStyle();
+        SetSelectedStyle();
         ReplaceFont(@"C:\Windows\Fonts\NirmalaB.ttf", 16, FontGlyphRangeType.English);
         keyAuth.init();
         _isUpdateAvailable = _updatesUtils.AutoUpdate();
@@ -33,6 +43,24 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         return Task.CompletedTask;
     }
 
+    private void SetSelectedStyle()
+    {
+        switch (_selectedStyle)
+        {
+            case ImGuiStyleType.ComfyTheme:
+                ComfyTheme.SetStyle();
+                break;            
+            
+            case ImGuiStyleType.DarculaTheme:
+                DarculaTheme.SetStyle();
+                break;
+
+            default:
+                Style.SetStyle(); 
+                break;
+        }
+    }
+    
     protected override void Render()
     {
         ImGui.SetNextWindowSize(new Vector2(650, 330), ImGuiCond.Once);
@@ -40,6 +68,13 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 
         ImGui.Begin("KeyAuth - Loader C#", ref _isLoaderShown, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize);
         {
+            int selectedStyleIndex = (int)_selectedStyle;
+            if (ImGui.Combo("Select Style", ref selectedStyleIndex, "Default\0Comfy\0Darcula\0"))
+            {
+                _selectedStyle = (ImGuiStyleType)selectedStyleIndex;
+                SetSelectedStyle();
+            }
+            
             if (!string.IsNullOrEmpty(_authUtils.systemMessage))
             {
                 ImGui.Separator();
@@ -98,8 +133,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         }
         ImGui.End();
     }
-
-
+    
     private void RenderInfoTab()
     {
         ImGui.Text($"Built at:");
