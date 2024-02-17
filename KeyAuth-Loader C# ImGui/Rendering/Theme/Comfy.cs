@@ -1,7 +1,7 @@
 ﻿using System.Numerics;
 using ImGuiNET;
 
-namespace KeyAuth.Theme;
+namespace KeyAuth.Rendering.Theme;
 
 public static class ComfyTheme
 {

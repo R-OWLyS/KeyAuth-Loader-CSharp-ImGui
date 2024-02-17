@@ -77,8 +77,8 @@ namespace KeyAuth.Utility
             
             keyAuth.response.message = "User Registered Successfully!";
             credentialService.SaveCredentials();
-            return true;
             
+            return true;
         }
     }
 }

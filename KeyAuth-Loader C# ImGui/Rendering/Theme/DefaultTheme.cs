@@ -1,9 +1,9 @@
 ﻿using System.Numerics;
 using ImGuiNET;
 
-namespace KeyAuth.Renderer
+namespace KeyAuth.Rendering.Theme
 {
-    public static class Style
+    public static class DefaultTheme
     {
         public static void SetStyle()
         {

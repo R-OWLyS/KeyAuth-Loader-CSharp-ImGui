@@ -14,16 +14,5 @@ namespace KeyAuth.Utility
 
             return data[section]?.ToString()??"";
         }
-
-        public bool CheckIfJsonKeyExists(string path, string section)
-        {
-            if (!File.Exists(path))
-                return false;
-
-            var jsonData = File.ReadAllText(path);
-            var data = JObject.Parse(jsonData);
-
-            return data.ContainsKey(section);
-        }
     }
 }
