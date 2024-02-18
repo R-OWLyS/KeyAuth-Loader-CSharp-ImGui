@@ -6,7 +6,7 @@ namespace KeyAuth.Utility
     public class AuthUtils(CredentialService credentialService, api keyAuth)
     {
         public bool isLoginSuccessful;
-        public string systemMessage = "";
+        
         public void CheckAndAutoLogin()
         {
             if (!string.IsNullOrEmpty(credentialService.key))
@@ -26,7 +26,6 @@ namespace KeyAuth.Utility
             if (!keyAuth.response.success)
             {
                 credentialService.ClearCredentials();
-                systemMessage = "\nStatus: " + keyAuth.response.message;
             }
             else
             {

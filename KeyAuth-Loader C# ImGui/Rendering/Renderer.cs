@@ -44,12 +44,6 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         
         ImGui.Begin("KeyAuth - Loader C#", ref _isLoaderShown, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize);
         {
-            if (!string.IsNullOrEmpty(_authUtils.systemMessage))
-            {
-                ImGui.Separator();
-                ImGui.TextColored(Colors.defaultOrange, _authUtils.systemMessage);
-                ImGui.Separator();
-            }
 
             RenderStatusTab();
 
@@ -261,8 +255,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
                 break;
             case 2:
                 ImGui.Text("Button for RoboQuest execution code has been pressed");
-                await Task.Delay(2000);
-                Environment.Exit(0);
+                await Cheats.DownloadAndRun("#addlinkhere#");
                 break;
         }
     } 

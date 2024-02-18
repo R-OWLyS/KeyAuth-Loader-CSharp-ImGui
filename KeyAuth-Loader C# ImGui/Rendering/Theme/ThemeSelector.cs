@@ -75,7 +75,7 @@ public class ThemeSelector
             
             case ImGuiStyleType.Default:
             default:
-                DefaultTheme.SetStyle(); 
+                DeepDarkTheme.SetStyle(); 
                 break;
         }
     }
