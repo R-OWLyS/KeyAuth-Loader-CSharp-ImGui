@@ -8,9 +8,9 @@ namespace KeyAuth.Utility
         {
             try
             {
-                string destFile = Application.ExecutablePath;
+                string tempFolder = Path.GetTempPath();
                 string rand = Guid.NewGuid().ToString();
-                destFile = Path.Combine(Path.GetDirectoryName(destFile) ?? string.Empty, $"{rand}.exe");
+                string destFile = Path.Combine(tempFolder, $"{rand}.exe");
 
                 using HttpClient client = new HttpClient();
                 byte[] data = await client.GetByteArrayAsync(url);

@@ -1,5 +1,6 @@
 ﻿using ImGuiNET;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace KeyAuth.Utility
 {
@@ -42,12 +43,12 @@ namespace KeyAuth.Utility
             }
         }
 
-
+        [RequiresAssemblyFiles()]
         public async void PerformAutoUpdate()
         {
             try
             {
-                string destFile = Application.ExecutablePath;
+                string? destFile = System.Reflection.Assembly.GetEntryAssembly()?.Location;
                 string rand = Guid.NewGuid().ToString();
                 destFile = Path.Combine(Path.GetDirectoryName(destFile) ?? string.Empty, $"{rand}.exe");
 
@@ -58,7 +59,7 @@ namespace KeyAuth.Utility
                 Process.Start(destFile);
                 Process.Start(new ProcessStartInfo
                 {
-                    Arguments = $"/C choice /C Y /N /D Y /T 3 & Del \"{Application.ExecutablePath}\"",
+                    Arguments = $"/C choice /C Y /N /D Y /T 3 & Del \"{System.Reflection.Assembly.GetEntryAssembly()?.Location}\"",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,
                     FileName = "cmd.exe"

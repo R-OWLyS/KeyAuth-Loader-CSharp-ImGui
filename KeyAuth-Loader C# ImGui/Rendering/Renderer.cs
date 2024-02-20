@@ -237,7 +237,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 
     private async void RenderCheatListTab()
     {
-        ImGui.TextColored(Colors.defaultMagenta, "List Available");
+        ImGui.TextColored(Colors.defaultGreen, "Press a button to start the cheat, make sure to start the game first.");
         ImGui.NewLine();
         CheatList.Render(_cheatNames, ref _cheat);
         
@@ -255,7 +255,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
                 break;
             case 2:
                 ImGui.Text("Button for RoboQuest execution code has been pressed");
-                await Cheats.DownloadAndRun("#addlinkhere#");
+                await Cheats.DownloadAndRun("");
                 break;
         }
     } 
