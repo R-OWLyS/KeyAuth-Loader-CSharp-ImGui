@@ -1,4 +1,4 @@
-﻿using System.Security.Cryptography;
+using System.Security.Cryptography;
 using System.Collections.Specialized;
 using System.Text;
 using System.Net;
@@ -9,45 +9,18 @@ using System.Security.Principal;
 using System.Security.Cryptography.X509Certificates;
 using System.Net.Security;
 using System.Runtime.CompilerServices;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace KeyAuth
 {
-    public class api
+    [JsonSerializable(typeof(response_structure))]
+    internal partial class JsonSerializerContextResponse : JsonSerializerContext
     {
-        public string name, ownerid, secret, version, path;
-        public static long responseTime;
-        /// <summary>
-        /// Set up your application credentials in order to use keyauth
-        /// </summary>
-        /// <param name="name">Application Name</param>
-        /// <param name="ownerid">Your OwnerID, found in your account settings.</param>
-        /// <param name="secret">Application Secret</param>
-        /// <param name="version">Application Version, if version doesnt match it will open the download link you set up in your application settings and close the app, if empty the app will close</param>
-        public api(string name, string ownerid, string secret, string version, string path = null)
-        {
-            if (ownerid.Length != 10 || secret.Length != 64)
-            {
-                Process.Start("https://youtube.com/watch?v=RfDTdiBq4_o");
-                Process.Start("https://keyauth.cc/app/");
-                Thread.Sleep(2000);
-                error("Application not setup correctly. Please watch the YouTube video for setup.");
-                Environment.Exit(0);
-            }
-
-            this.name = name;
-
-            this.ownerid = ownerid;
-
-            this.secret = secret;
-
-            this.version = version;
-
-            this.path = path;
-        }
-
-        #region structures
+    }
+      #region structures
         [DataContract]
-        private class response_structure
+        public class response_structure
         {
             [DataMember]
             public bool success { get; set; }
@@ -96,7 +69,7 @@ namespace KeyAuth
         }
 
         [DataContract]
-        private class user_data_structure
+        public class user_data_structure
         {
             [DataMember]
             public string username { get; set; }
@@ -110,11 +83,11 @@ namespace KeyAuth
             [DataMember]
             public string lastlogin { get; set; }
             [DataMember]
-            public List<Data> subscriptions { get; set; } // array of subscriptions (basically multiple user ranks for user with individual expiry dates
+            public List<api.Data> subscriptions { get; set; } // array of subscriptions (basically multiple user ranks for user with individual expiry dates
         }
 
         [DataContract]
-        private class app_data_structure
+        public class app_data_structure
         {
             [DataMember]
             public string numUsers { get; set; }
@@ -130,6 +103,42 @@ namespace KeyAuth
             public string downloadLink { get; set; }
         }
         #endregion
+    public class api
+    {
+        
+       
+        public string name, ownerid, secret, version, path;
+        public static long responseTime;
+        /// <summary>
+        /// Set up your application credentials in order to use keyauth
+        /// </summary>
+        /// <param name="name">Application Name</param>
+        /// <param name="ownerid">Your OwnerID, found in your account settings.</param>
+        /// <param name="secret">Application Secret</param>
+        /// <param name="version">Application Version, if version doesnt match it will open the download link you set up in your application settings and close the app, if empty the app will close</param>
+        public api(string name, string ownerid, string secret, string version, string path = null)
+        {
+            if (ownerid.Length != 10 || secret.Length != 64)
+            {
+                Process.Start("https://youtube.com/watch?v=RfDTdiBq4_o");
+                Process.Start("https://keyauth.cc/app/");
+                Thread.Sleep(2000);
+                error("Application not setup correctly. Please watch the YouTube video for setup.");
+                Environment.Exit(0);
+            }
+
+            this.name = name;
+
+            this.ownerid = ownerid;
+
+            this.secret = secret;
+
+            this.version = version;
+
+            this.path = path;
+        }
+
+      
         private static string sessionid, enckey;
         bool initialized;
         /// <summary>
@@ -162,8 +171,7 @@ namespace KeyAuth
                 error("Application not found");
                 Environment.Exit(0);
             }
-
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
             {
@@ -256,7 +264,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
                 load_user_data(json.info);
@@ -282,7 +290,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
         }
         /// <summary>
@@ -309,7 +317,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
                 load_user_data(json.info);
@@ -329,7 +337,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
         }
 
@@ -398,7 +406,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
 
             bool success = true;
@@ -493,7 +501,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             json.success = false;
             load_response_struct(json);
         }
@@ -520,7 +528,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
                 load_user_data(json.info);
@@ -542,7 +550,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
         }
         /// <summary>
@@ -566,7 +574,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
         }
         /// <summary>
@@ -589,7 +597,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
                 return json.response;
@@ -613,7 +621,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
         }
         /// <summary>
@@ -636,7 +644,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
                 return json.message;
@@ -660,7 +668,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
 
             if (json.success)
@@ -684,7 +692,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
 
             if (json.success)
@@ -710,7 +718,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
             {
@@ -740,7 +748,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
                 return true;
@@ -766,7 +774,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
                 return true;
@@ -798,7 +806,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
                 return json.response;
@@ -825,7 +833,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
             if (json.success)
                 return encryption.str_to_byte_arr(json.contents);
@@ -870,7 +878,7 @@ namespace KeyAuth
 
             var response = req(values_to_upload);
 
-            var json = response_decoder.string_to_generic<response_structure>(response);
+            var json = JsonSerializer.Deserialize(response,JsonSerializerContextResponse.Default.response_structure);
             load_response_struct(json);
         }
 
@@ -1059,8 +1067,6 @@ namespace KeyAuth
             response.message = data.message;
         }
         #endregion
-
-        private json_wrapper response_decoder = new json_wrapper(new response_structure());
     }
 
     public static class encryption
@@ -1117,39 +1123,5 @@ namespace KeyAuth
         public static string iv_key() =>
             Guid.NewGuid().ToString().Substring(0, 16);
     }
-
-    public class json_wrapper
-    {
-        public static bool is_serializable(Type to_check) =>
-            to_check.IsSerializable || to_check.IsDefined(typeof(DataContractAttribute), true);
-
-        public json_wrapper(object obj_to_work_with)
-        {
-            current_object = obj_to_work_with;
-
-            var object_type = current_object.GetType();
-
-            serializer = new DataContractJsonSerializer(object_type);
-
-            if (!is_serializable(object_type))
-                throw new Exception($"the object {current_object} isn't a serializable");
-        }
-
-        public object string_to_object(string json)
-        {
-            var buffer = Encoding.Default.GetBytes(json);
-
-            //SerializationException = session expired
-
-            using (var mem_stream = new MemoryStream(buffer))
-                return serializer.ReadObject(mem_stream);
-        }
-
-        public T string_to_generic<T>(string json) =>
-            (T)string_to_object(json);
-
-        private DataContractJsonSerializer serializer;
-
-        private object current_object;
-    }
+    
 }
