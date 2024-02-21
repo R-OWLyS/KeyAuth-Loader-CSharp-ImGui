@@ -8,7 +8,7 @@ public static class DeepDarkTheme
     public static void SetStyle()
     {
         	var style = ImGuiNET.ImGui.GetStyle();
-	
+	    
 	style.Alpha = 1.0f;
 	style.DisabledAlpha = 0.6000000238418579f;
 	style.WindowPadding = new Vector2(8.0f, 8.0f);

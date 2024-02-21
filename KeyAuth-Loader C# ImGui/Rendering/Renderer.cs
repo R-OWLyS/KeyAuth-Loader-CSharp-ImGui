@@ -24,16 +24,31 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private readonly string[] _tabNames = new[] { "Credentials Login", "License Login", "Register User" };
     private readonly string[] _cheatNames = new[] { "CS2", "Dead Island 2", "RoboQuest" };
 
-    protected override Task PostInitialized()
+    private readonly string _fontPath = $"{AppDomain.CurrentDomain.BaseDirectory}Fonts\\LEMONMILKLight.otf";
+
+    protected override unsafe Task PostInitialized()
     { 
-        _themeSelector.SetSelectedTheme();
-        ReplaceFont(@"C:\Windows\Fonts\NirmalaB.ttf", 16, FontGlyphRangeType.English);
         keyAuth.init();
+        _themeSelector.SetSelectedTheme();
         _isUpdateAvailable = _updatesUtils.AutoUpdate();
+        
+        ReplaceFont(config =>
+        {
+            if (!File.Exists(_fontPath))
+            {
+                ReplaceFont(@"C:\Windows\Fonts\NirmalaB.ttf", 16, FontGlyphRangeType.English);
+            }
+            else
+            {
+                ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath, 13.5f, config, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
+            }
+        });
+        
         if (!_isUpdateAvailable)
         {
             _authUtils.CheckAndAutoLogin();
         }
+        
         return Task.CompletedTask;
     }
     
@@ -44,7 +59,6 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         
         ImGui.Begin("KeyAuth - Loader C#", ref _isLoaderShown, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize);
         {
-
             RenderStatusTab();
 
             ImGui.BeginChild("#1", new Vector2(200, -29), ImGuiChildFlags.Border);
@@ -55,6 +69,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
                 }
                 ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 95);
                 RenderInfoTab();
+                
             }
             ImGui.EndChild();
 

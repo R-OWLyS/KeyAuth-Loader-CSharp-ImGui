@@ -9,8 +9,8 @@
     <Platforms>AnyCPU;x64</Platforms>
     <SignAssembly>False</SignAssembly>
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-	<IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
 	<PublishAot>true</PublishAot>
+	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
