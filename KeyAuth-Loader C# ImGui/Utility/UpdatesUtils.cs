@@ -73,8 +73,8 @@ namespace KeyAuth.Utility
                 throw;
             }
         }
-
-        [RequiresAssemblyFiles()]
+        
+        
         public void RestartApplication()
         {
             try
