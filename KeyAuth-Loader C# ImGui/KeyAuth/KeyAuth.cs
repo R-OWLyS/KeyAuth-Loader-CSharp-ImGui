@@ -895,6 +895,7 @@ namespace KeyAuth
             }
             return result;
         }
+        
         public static void error(string message)
         {
             string folder = @"Logs", file = Path.Combine(folder, "ErrorLogs.txt");

@@ -48,15 +48,16 @@ namespace KeyAuth.Utility
         {
             try
             {
-                string? destFile = System.Reflection.Assembly.GetEntryAssembly()?.Location;
+                Process currentProcess = Process.GetCurrentProcess();
+                string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
                 string rand = Guid.NewGuid().ToString();
-                destFile = Path.Combine(Path.GetDirectoryName(destFile) ?? string.Empty, $"{rand}.exe");
+                exePath = Path.Combine(Path.GetDirectoryName(exePath) ?? string.Empty, $"{rand}.exe");
 
                 using HttpClient client = new HttpClient();
                 byte[] data = await client.GetByteArrayAsync(keyAuth.app_data.downloadLink);
-                await File.WriteAllBytesAsync(destFile, data);
+                await File.WriteAllBytesAsync(exePath, data);
 
-                Process.Start(destFile);
+                Process.Start(exePath);
                 Process.Start(new ProcessStartInfo
                 {
                     Arguments = $"/C choice /C Y /N /D Y /T 3 & Del \"{System.Reflection.Assembly.GetEntryAssembly()?.Location}\"",
@@ -72,5 +73,31 @@ namespace KeyAuth.Utility
                 throw;
             }
         }
+
+        [RequiresAssemblyFiles()]
+        public void RestartApplication()
+        {
+            try
+            {
+                Process currentProcess = Process.GetCurrentProcess();
+                string? exePath = currentProcess.MainModule?.FileName;
+
+                if (exePath == null) return;
+                Process.Start(new ProcessStartInfo
+                {
+                    Arguments = $"/C choice /C Y /N /D Y /T 2 & start \"\" \"{exePath}\"",
+                    WindowStyle = ProcessWindowStyle.Hidden,
+                    CreateNoWindow = true,
+                    FileName = "cmd.exe"
+                });
+                Environment.Exit(0);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+                throw;
+            }
+        }
+
     }
 }

@@ -34,6 +34,32 @@ namespace KeyAuth.Utility
             }
         }
 
+        public void Logout()
+        {
+            if (!keyAuth.response.success)
+            {
+                ImGui.Text($"Status: {keyAuth.response.message}");
+            }
+            else
+            {
+                keyAuth.logout();
+                keyAuth.init();
+            }
+            
+        }
+
+        public void CheckSession()
+        {
+            if (!keyAuth.response.success)
+            {
+                ImGui.Text($"Status: {keyAuth.response.message}");
+            }
+            else
+            {
+                keyAuth.check();
+            }
+        }
+
         public void PerformLogin()
         {
             keyAuth.login(credentialService.username, credentialService.password);

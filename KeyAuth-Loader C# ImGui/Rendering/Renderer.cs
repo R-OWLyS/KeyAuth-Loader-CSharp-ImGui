@@ -12,6 +12,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private bool _isUpdateAvailable;
     private bool _showCheatListTab;
     private bool _isLoaderShown = true;
+    private bool _showFps = false;
     private int _cheat;
     private int _tab;
 
@@ -21,7 +22,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private readonly ThemeSelector _themeSelector = new ThemeSelector();
     private readonly AuthUtils _authUtils = new(credentialService,keyAuth);
 
-    private readonly string[] _tabNames = new[] { "Credentials Login", "License Login", "Register User" };
+    private readonly string[] _tabNames = new[] { "Credentials Login", "License Login", "Register User", "Settings" };
     private readonly string[] _cheatNames = new[] { "CS2", "Dead Island 2", "RoboQuest" };
 
     private readonly string _fontPath = $"{AppDomain.CurrentDomain.BaseDirectory}Fonts\\LEMONMILKLight.otf";
@@ -54,7 +55,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     
     protected override void Render()
     {
-        ImGui.SetNextWindowSize(new Vector2(650, 360), ImGuiCond.Once);
+        ImGui.SetNextWindowSize(new Vector2(670, 400), ImGuiCond.Once);
         ImGui.SetNextWindowPos(new Vector2(0, 0), ImGuiCond.Once);
         
         ImGui.Begin("KeyAuth - Loader C#", ref _isLoaderShown, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize);
@@ -67,9 +68,9 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
                 {   
                     VerticalTabBar.Render(_tabNames, ref _tab);  
                 }
+                
                 ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 95);
                 RenderInfoTab();
-                
             }
             ImGui.EndChild();
 
@@ -93,6 +94,9 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
                             break;
                         case 2:
                             RenderRegisterTab();
+                            break;
+                        case 3:
+                            RenderSettingsTab();
                             break;
                     }
                 }
@@ -123,6 +127,13 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     
     private void RenderInfoTab()
     {
+        if (_showFps)
+        {
+            ImGui.Text($"FPS:");
+            ImGui.SameLine();
+            ImGui.TextColored(Colors.defaultGreen, $"{ImGui.GetIO().Framerate}");
+        }
+        ImGui.Spacing();
         ImGui.Text($"Built at:");
         ImGui.SameLine();
         ImGui.TextColored(Colors.defaultGreen, $"{_connectionTime}");
@@ -145,6 +156,27 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
             ImGui.Text($"Status:");
             ImGui.SameLine();
             ImGui.TextColored(Colors.defaultGreen, keyAuth.response.message);
+        }
+    }
+
+    private void RenderSettingsTab()
+    {
+        ImGui.Checkbox("Toggle FPS", ref _showFps);
+        ImGui.SameLine();
+        if (ImGui.Button("Restart Loader"))
+        {
+            _updatesUtils.RestartApplication();
+        }
+        ImGui.SameLine();
+        if (ImGui.Button("Delete Saved Creds"))
+        {
+            credentialService.ClearCredentials();
+        }
+        ImGui.SameLine();
+        if (ImGui.Button("Check Session"))
+        {
+            _authUtils.CheckSession();
+            ImGui.SameLine();
         }
     }
 
@@ -216,6 +248,14 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     {
         ImGui.Spacing();
         ImGui.TextColored(Colors.defaultGreen,"Client Authenticated Successfully");
+        ImGui.Spacing();
+        ImGui.Text("Created at:");
+        ImGui.SameLine();
+        ImGui.TextColored(Colors.defaultGreen,$"{TimeClock.UnixTimeToDateTime(long.Parse(keyAuth.user_data.createdate))}");        
+        ImGui.Text("Last login at:");
+        ImGui.SameLine();
+        ImGui.TextColored(Colors.defaultGreen,$"{TimeClock.UnixTimeToDateTime(long.Parse(keyAuth.user_data.lastlogin))}");
+        
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 25);
         ImGui.Text("Username:");
         ImGui.SameLine();
@@ -226,6 +266,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         ImGui.Text("Hardware ID:");
         ImGui.SameLine();
         ImGui.TextColored(Colors.defaultOrange, $"{keyAuth.user_data.hwid}");
+
         ImGui.NewLine();
         ImGui.Text("Your subscription(s):");
         ImGui.Spacing();
@@ -243,11 +284,18 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
             ImGui.TextColored(Colors.defaultRed, $"{TimeClock.UnixTimeToDateTime(long.Parse(t.expiry))}");
         }
         ImGui.Spacing();
-        if (!ImGui.Button("Choose Cheat")) return;
+        if (ImGui.Button("Choose Cheat"))
+        {
+            _authUtils.isLoginSuccessful = false;
+            _showCheatListTab = true;
+            _tab = 4;
+            _cheat = 4;
+        }
+        ImGui.SameLine();
+        if (!ImGui.Button("Logout")) return;
         _authUtils.isLoginSuccessful = false;
-        _showCheatListTab = true;
-        _tab = 4;
-        _cheat = 4;
+        _authUtils.Logout();
+        _tab = 1;
     }
 
     private async void RenderCheatListTab()
