@@ -31,6 +31,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private readonly string[] _cheatNames = new[] { "CS2", "Dead Island 2", "RoboQuest" };
     
     private readonly string _fontPath = $"{AppDomain.CurrentDomain.BaseDirectory}Fonts\\LEMONMILKLight.otf";
+    //private readonly string _fontPath2 = $"{AppDomain.CurrentDomain.BaseDirectory}Fonts\\arial-unicode-ms.ttf";
 
     
     protected override unsafe Task PostInitialized()
@@ -49,6 +50,8 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
             else
             {
                 ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath, 13.5f, config, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
+                //ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 13.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
+                //ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 13.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon());
             }
         });
         
