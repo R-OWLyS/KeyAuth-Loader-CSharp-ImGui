@@ -1,5 +1,8 @@
-﻿using KeyAuth.Utility;
+﻿using ImGuiNET;
+using KeyAuth.Rendering;
+using KeyAuth.Utility;
 using Newtonsoft.Json.Linq;
+using KeyAuth.Rendering.Theme;
 
 namespace KeyAuth.Credentials;
 
@@ -10,6 +13,9 @@ public class CredentialService
     public string key;
     public string email;
     private const string FilePath = "credentials.json";
+
+    private bool isJsonDeleted;
+    
     public CredentialService()
     {
         var jsonUtils = new JsonUtils();
@@ -32,7 +38,15 @@ public class CredentialService
     }
     public void ClearCredentials()
     {
-        File.Delete(FilePath);
+        if (File.Exists(FilePath)) 
+        {
+            File.Delete(FilePath);
+            Renderer.systemMessage = "Success: credentials.json deleted";
+        }
+        else
+        {
+            Renderer.systemMessage = "Failed: unable to delete json file";
+        }
     }
     
 }

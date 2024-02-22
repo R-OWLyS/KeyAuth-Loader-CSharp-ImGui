@@ -9,6 +9,8 @@ namespace KeyAuth.Rendering;
 
 public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 {
+    public static string systemMessage = "";
+    
     private bool _isUpdateAvailable;
     private bool _showCheatListTab;
     private bool _isLoaderShown = true;
@@ -19,18 +21,22 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private readonly DateTime _connectionTime = DateTime.Now;
 
     private readonly UpdatesUtils _updatesUtils = new(keyAuth);
+    private readonly AuthUtils _authUtils = new(credentialService,keyAuth);
+    
     private readonly ThemeSelector _themeSelector = new ThemeSelector();
     private readonly CheckProcess _checkProcess = new CheckProcess();
-    private readonly AuthUtils _authUtils = new(credentialService,keyAuth);
+    private readonly LanguageSelector _ls = new LanguageSelector();
 
     private readonly string[] _tabNames = new[] { "Credentials Login", "License Login", "Register User", "Settings" };
     private readonly string[] _cheatNames = new[] { "CS2", "Dead Island 2", "RoboQuest" };
-
+    
     private readonly string _fontPath = $"{AppDomain.CurrentDomain.BaseDirectory}Fonts\\LEMONMILKLight.otf";
 
+    
     protected override unsafe Task PostInitialized()
     { 
         keyAuth.init();
+        _checkProcess.CheckCurrentProcess();
         _themeSelector.SetSelectedTheme();
         _isUpdateAvailable = _updatesUtils.AutoUpdate();
         
@@ -50,8 +56,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         {
             _authUtils.CheckAndAutoLogin();
         }
-       
-        _checkProcess.CheckCurrentProcess();
+        
         return Task.CompletedTask;
     }
     
@@ -64,12 +69,13 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         ImGui.Begin("KeyAuth - Loader C#", ref _isLoaderShown, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize);
         {
             RenderStatusTab();
-
+            
             ImGui.BeginChild("#1", new Vector2(200, -29), ImGuiChildFlags.Border);
             {
                 if (!_isUpdateAvailable && !_authUtils.isLoginSuccessful &&!_showCheatListTab)
                 {   
-                    VerticalTabBar.Render(_tabNames, ref _tab);  
+                    string[] localizedTabNames = _ls.GetArray(_tabNames);
+                    VerticalTabBar.Render(localizedTabNames, ref _tab);  
                 }
                 
                 ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 95);
@@ -117,7 +123,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
             }
             ImGui.EndChild();
             
-            _themeSelector.Selector();
+            _ls.RenderLanguageSelector();
             
             if (_isLoaderShown == false)
             {
@@ -126,6 +132,13 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 
         }
         ImGui.End();
+    }
+
+    private void RenderSystemMessage()
+    {
+        ImGui.Spacing();
+        ImGui.TextColored(systemMessage.Contains("success") ? Colors.defaultGreen : Colors.defaultRed,
+            $"{systemMessage}");
     }
     
     private void RenderInfoTab()
@@ -137,10 +150,10 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
             ImGui.TextColored(Colors.defaultGreen, $"{ImGui.GetIO().Framerate}");
         }
         ImGui.Spacing();
-        ImGui.Text($"Built at:");
+        ImGui.Text(_ls.GetString("Built at:"));
         ImGui.SameLine();
         ImGui.TextColored(Colors.defaultGreen, $"{_connectionTime}");
-        ImGui.Text($"Client Version:");
+        ImGui.Text(_ls.GetString("Client Version:"));
         ImGui.SameLine();
         ImGui.TextColored(Colors.defaultGreen, $"{keyAuth.version}");
         ImGui.Spacing();
@@ -150,13 +163,13 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     {
         if (!keyAuth.response.success)
         {
-            ImGui.Text($"Status:");
+            ImGui.Text(_ls.GetString($"Status:"));
             ImGui.SameLine();
             ImGui.TextColored(Colors.defaultRed, keyAuth.response.message);
         }
         else
         {
-            ImGui.Text($"Status:");
+            ImGui.Text(_ls.GetString($"Status:"));
             ImGui.SameLine();
             ImGui.TextColored(Colors.defaultGreen, keyAuth.response.message);
         }
@@ -164,34 +177,38 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 
     private void RenderSettingsTab()
     {
-        ImGui.Checkbox("Toggle FPS", ref _showFps);
-        ImGui.SameLine();
-        if (ImGui.Button("Restart Loader"))
+        ImGui.Checkbox(_ls.GetString("Toggle FPS"), ref _showFps);
+        
+        if (ImGui.Button(_ls.GetString("Restart Loader")))
         {
             _updatesUtils.RestartApplication();
         }
-        ImGui.SameLine();
-        if (ImGui.Button("Delete Saved Creds"))
+        
+        if (ImGui.Button(_ls.GetString("Delete Saved Creds")))
         {
             credentialService.ClearCredentials();
         }
-        ImGui.SameLine();
-        if (ImGui.Button("Check Session"))
+        
+        if (ImGui.Button(_ls.GetString("Check Session")))
         {
             _authUtils.CheckSession();
             ImGui.SameLine();
         }
+        
+        _themeSelector.Selector();
+        
+        RenderSystemMessage();
     }
 
     private void RenderCredentialsTab()
     {
         ImGui.Spacing();
-        ImGui.Text("Username");
+        ImGui.Text(_ls.GetString("Username"));
         ImGui.InputText("##Username", ref credentialService.username, 100);
-        ImGui.Text("Password");
+        ImGui.Text(_ls.GetString("Password"));
         ImGui.InputText("##Password", ref credentialService.password, 100, ImGuiInputTextFlags.Password);
         ImGui.Spacing();
-        if (ImGui.Button("Login"))
+        if (ImGui.Button(_ls.GetString("Login")))
         {
             _authUtils.PerformLogin();
         }
@@ -200,10 +217,10 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private void RenderLicenseTab()
     {
         ImGui.Spacing();
-        ImGui.Text("License");
+        ImGui.Text(_ls.GetString("License"));
         ImGui.InputText("##LicenseKey", ref credentialService.key, 100, ImGuiInputTextFlags.Password);
         ImGui.Spacing();
-        if (ImGui.Button("License Login"))
+        if (ImGui.Button(_ls.GetString("License Login")))
         {
             _authUtils.PerformLicenseLogin();
         }
@@ -212,16 +229,16 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private void RenderRegisterTab()
     {
         ImGui.Spacing();
-        ImGui.Text("Username");
+        ImGui.Text(_ls.GetString("Username"));
         ImGui.InputText("##Username", ref credentialService.username, 100);
-        ImGui.Text("Password");
+        ImGui.Text(_ls.GetString("Password"));
         ImGui.InputText("##Password", ref credentialService.password, 100, ImGuiInputTextFlags.Password);            
-        ImGui.Text("License");
+        ImGui.Text(_ls.GetString("License"));
         ImGui.InputText("##License", ref credentialService.key, 100, ImGuiInputTextFlags.Password);            
-        ImGui.Text("Email");
+        ImGui.Text(_ls.GetString("Email"));
         ImGui.InputText("##Email", ref credentialService.email, 100);
         ImGui.Spacing();
-        if (!ImGui.Button("Register Now")) return;
+        if (!ImGui.Button(_ls.GetString("Register Account"))) return;
         _authUtils.PerformRegisterUser();
         _tab = 0;
     }        
@@ -229,18 +246,18 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private void RenderUpdateTab()
     {
         ImGui.Spacing();
-        ImGui.TextColored(Colors.defaultGreen, "New Update Available!");
+        ImGui.TextColored(Colors.defaultGreen, _ls.GetString("New Update Available!"));
         ImGui.Spacing();
-        ImGui.Text("The current client version is obsolete.\nPlease download the new version to be able to connect again.");
+        ImGui.Text(_ls.GetString("The current client version is obsolete.\nPlease download the new version to be able to connect again."));
         ImGui.Spacing();
-        if (ImGui.Button("Download Manually"))
+        if (ImGui.Button(_ls.GetString("Download Manually")))
         {
             _updatesUtils.PerformUpdate();
         }
 
         ImGui.SameLine();
 
-        if (ImGui.Button("Auto-Update"))
+        if (ImGui.Button(_ls.GetString("Auto-Update")))
         {
             _updatesUtils.PerformAutoUpdate();
         }
@@ -250,44 +267,44 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private void RenderSuccessTab()
     {
         ImGui.Spacing();
-        ImGui.TextColored(Colors.defaultGreen,"Client Authenticated Successfully");
+        ImGui.TextColored(Colors.defaultGreen,_ls.GetString("Client Authenticated Successfully"));
         ImGui.Spacing();
-        ImGui.Text("Created at:");
+        ImGui.Text(_ls.GetString("Created at:"));
         ImGui.SameLine();
         ImGui.TextColored(Colors.defaultGreen,$"{TimeClock.UnixTimeToDateTime(long.Parse(keyAuth.user_data.createdate))}");        
-        ImGui.Text("Last login at:");
+        ImGui.Text(_ls.GetString("Last login at:"));
         ImGui.SameLine();
         ImGui.TextColored(Colors.defaultGreen,$"{TimeClock.UnixTimeToDateTime(long.Parse(keyAuth.user_data.lastlogin))}");
         
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 25);
-        ImGui.Text("Username:");
+        ImGui.Text(_ls.GetString("Username:"));
         ImGui.SameLine();
         ImGui.TextColored(Colors.defaultOrange, $"{keyAuth.user_data.username}");
-        ImGui.Text("IP Address:");
+        ImGui.Text(_ls.GetString("IP Address:"));
         ImGui.SameLine();
         ImGui.TextColored(Colors.defaultOrange, $"{keyAuth.user_data.ip}");
-        ImGui.Text("Hardware ID:");
+        ImGui.Text(_ls.GetString("Hardware ID:"));
         ImGui.SameLine();
         ImGui.TextColored(Colors.defaultOrange, $"{keyAuth.user_data.hwid}");
 
         ImGui.NewLine();
-        ImGui.Text("Your subscription(s):");
+        ImGui.Text(_ls.GetString("Your subscription(s):"));
         ImGui.Spacing();
         ImGui.SameLine();
         ImGui.Spacing();
         
         foreach (var t in keyAuth.user_data.subscriptions)
         {
-            ImGui.Text($"Subscription name:");
+            ImGui.Text(_ls.GetString($"Subscription name:"));
             ImGui.SameLine();
             ImGui.TextColored(Colors.defaultCyan, $"{t.subscription}");
             ImGui.SameLine();
-            ImGui.Text("Expires at:");
+            ImGui.Text(_ls.GetString("Expires at:"));
             ImGui.SameLine();
             ImGui.TextColored(Colors.defaultRed, $"{TimeClock.UnixTimeToDateTime(long.Parse(t.expiry))}");
         }
         ImGui.Spacing();
-        if (ImGui.Button("Choose Cheat"))
+        if (ImGui.Button(_ls.GetString("Choose Cheat")))
         {
             _authUtils.isLoginSuccessful = false;
             _showCheatListTab = true;
@@ -295,7 +312,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
             _cheat = 4;
         }
         ImGui.SameLine();
-        if (!ImGui.Button("Logout")) return;
+        if (!ImGui.Button(_ls.GetString("Logout"))) return;
         _authUtils.isLoginSuccessful = false;
         _authUtils.Logout();
         _tab = 1;
@@ -303,7 +320,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 
     private async void RenderCheatListTab()
     {
-        ImGui.TextColored(Colors.defaultGreen, "Press a button to start the cheat, make sure to start the game first.");
+        ImGui.TextColored(Colors.defaultGreen, _ls.GetString("Press a button to start the cheat, make sure to start the game first."));
         ImGui.NewLine();
         CheatList.Render(_cheatNames, ref _cheat);
         

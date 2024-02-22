@@ -2,8 +2,13 @@ using ImGuiNET;
 
 namespace KeyAuth.Rendering.Theme;
 
-public class ThemeSelector
+public class ThemeSelector()
 {
+    private readonly string[] _themeOptions = new[]
+    {
+        "Default", "Comfy", "Darcula", "Dark Ruda", "Deep Dark", "Discord", "Future Dark", "Gold", "Material Flat",
+        "Moonlight", "Nebula"
+    };
     private ImGuiStyleType _selectedStyle = ImGuiStyleType.Default;
     
     private enum ImGuiStyleType
@@ -23,10 +28,14 @@ public class ThemeSelector
     
     public void Selector()
     {
+        ImGui.Text("Style:");
+        ImGui.SameLine();
         var selectedStyleIndex = (int)_selectedStyle;
-        if (!ImGui.Combo("Loader Theme", ref selectedStyleIndex, "Default\0Comfy\0Darcula\0Dark Ruda\0Deep Dark\0Discord\0Future Dark\0Gold\0Material Flat\0Moonlight\0Nebula\0")) return;
-        _selectedStyle = (ImGuiStyleType)selectedStyleIndex;
-        SetSelectedTheme();
+        if (ImGui.Combo("##Theme", ref selectedStyleIndex, _themeOptions, _themeOptions.Length))
+        {
+            _selectedStyle = (ImGuiStyleType)selectedStyleIndex;
+            SetSelectedTheme();
+        }
     }
     
     public void SetSelectedTheme()
