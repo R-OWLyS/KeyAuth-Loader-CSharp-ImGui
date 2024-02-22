@@ -20,6 +20,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
 
     private readonly UpdatesUtils _updatesUtils = new(keyAuth);
     private readonly ThemeSelector _themeSelector = new ThemeSelector();
+    private readonly CheckProcess _checkProcess = new CheckProcess();
     private readonly AuthUtils _authUtils = new(credentialService,keyAuth);
 
     private readonly string[] _tabNames = new[] { "Credentials Login", "License Login", "Register User", "Settings" };
@@ -49,12 +50,14 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         {
             _authUtils.CheckAndAutoLogin();
         }
-        
+       
+        _checkProcess.CheckCurrentProcess();
         return Task.CompletedTask;
     }
     
     protected override void Render()
     {
+
         ImGui.SetNextWindowSize(new Vector2(670, 400), ImGuiCond.Once);
         ImGui.SetNextWindowPos(new Vector2(0, 0), ImGuiCond.Once);
         
