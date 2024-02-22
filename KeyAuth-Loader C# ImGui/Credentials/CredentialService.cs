@@ -13,8 +13,7 @@ public class CredentialService
     public string key;
     public string email;
     private const string FilePath = "credentials.json";
-
-    private bool isJsonDeleted;
+    
     
     public CredentialService()
     {
