@@ -86,7 +86,7 @@ namespace KeyAuth.Utility
         {
             try
             {
-                Renderer.SystemMessage = "Success: Loader will be restarted, please wait few seconds";
+                Renderer.SystemMessage = "Completed: Loader will be restarted, please wait few seconds";
                 Process currentProcess = Process.GetCurrentProcess();
                 string? exePath = currentProcess.MainModule?.FileName;
 

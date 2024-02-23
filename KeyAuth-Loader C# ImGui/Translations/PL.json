@@ -45,9 +45,10 @@
   "Password does not match.": "Hasło nie pasuje.",
   "No license key was entered, try again.": "Nie wprowadzono klucza licencyjnego, spróbuj ponownie.",
   "No username was entered, try again.": "Nie wprowadzono nazwy użytkownika, spróbuj ponownie.",
-  "Success: Loader will be restarted, please wait a few seconds": "Sukces: Ładowacz zostanie ponownie uruchomiony, proszę poczekaj kilka sekund",
+  "Completed: Loader will be restarted, please wait few seconds": "Sukces: Ładowacz zostanie ponownie uruchomiony, proszę poczekaj kilka sekund",
   "List of available cheats": "Lista dostępnych oszustw",
   "Session is not validated": "Sesja nie jest zweryfikowana",
   "Error: unable to find credentials.json": "Błąd: nie można odnaleźć credentials.json",
-  "Completed: file credentials.json deleted successfully": "Ukończono: plik credentials.json został pomyślnie usunięty"
+  "Completed: file credentials.json deleted successfully": "Ukończono: plik credentials.json został pomyślnie usunięty",
+  "": ""
 }

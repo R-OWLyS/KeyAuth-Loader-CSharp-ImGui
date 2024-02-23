@@ -45,9 +45,10 @@
   "Password does not match.": "Password does not match.",
   "No license key was entered, try again.": "No license key was entered, try again.",
   "No username was entered, try again.": "No username was entered, try again.",
-  "Success: Loader will be restarted, please wait a few seconds": "Success: Loader will be restarted, please wait a few seconds",
+  "Completed: Loader will be restarted, please wait few seconds": "Success: Loader will be restarted, please wait a few seconds",
   "List of available cheats": "List of available cheats",
   "Session is not validated": "Session is not validated",
   "Error: unable to find credentials.json": "Error: unable to find credentials.json",
-  "Completed: file credentials.json deleted successfully": "Completed: file credentials.json deleted successfully"
+  "Completed: file credentials.json deleted successfully": "Completed: file credentials.json deleted successfully",
+  "": ""
 }

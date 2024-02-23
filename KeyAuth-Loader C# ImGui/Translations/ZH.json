@@ -45,9 +45,10 @@
   "Password does not match.": "密码不匹配",
   "No license key was entered, try again.": "未输入许可证密钥，请重试。",
   "No username was entered, try again.": "未输入用户名，请重试。",
-  "Success: Loader will be restarted, please wait a few seconds": "成功：加载器将被重新启动，请稍候几秒",
+  "Completed: Loader will be restarted, please wait few seconds": "成功：加载器将被重新启动，请稍候几秒",
   "List of available cheats": "可用作弊列表",
   "Session is not validated": "会话未验证",
   "Error: unable to find credentials.json": "错误：无法找到 credentials.json 文件",
-  "Completed: file credentials.json deleted successfully": "完成：credentials.json 文件已成功删除"
+  "Completed: file credentials.json deleted successfully": "完成：credentials.json 文件已成功删除",
+  "": ""
 }

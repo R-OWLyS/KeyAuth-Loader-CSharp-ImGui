@@ -45,9 +45,10 @@
   "Password does not match.": "Lösenordet matchar inte.",
   "No license key was entered, try again.": "Ingen licensnyckel angiven, försök igen.",
   "No username was entered, try again.": "Inget användarnamn angivet, försök igen.",
-  "Success: Loader will be restarted, please wait a few seconds": "Lyckat: Laddaren kommer startas om, vänta några sekunder",
+  "Completed: Loader will be restarted, please wait few seconds": "Lyckat: Laddaren kommer startas om, vänta några sekunder",
   "List of available cheats": "Lista över tillgängliga fusk",
   "Session is not validated": "Sessionen är inte validerad",
   "Error: unable to find credentials.json": "Fel: kan inte hitta credentials.json",
-  "Completed: file credentials.json deleted successfully": "Slutfört: filen credentials.json har raderats framgångsrikt"
+  "Completed: file credentials.json deleted successfully": "Slutfört: filen credentials.json har raderats framgångsrikt",
+  "": ""
 }

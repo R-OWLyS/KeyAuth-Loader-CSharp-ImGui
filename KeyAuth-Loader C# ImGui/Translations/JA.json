@@ -45,9 +45,10 @@
   "Password does not match.": "パスワードが一致しません。",
   "No license key was entered, try again.": "ライセンスキーが入力されていません。もう一度試してください。",
   "No username was entered, try again.": "ユーザー名が入力されていません。もう一度試してください。",
-  "Success: Loader will be restarted, please wait a few seconds": "成功：ローダーが再起動されます。数秒お待ちください",
+  "Completed: Loader will be restarted, please wait few seconds": "成功：ローダーが再起動されます。数秒お待ちください",
   "List of available cheats": "利用可能なチートのリスト",
   "Session is not validated": "セッションが検証されていません",
   "Error: unable to find credentials.json": "エラー：credentials.jsonが見つかりません",
-  "Completed: file credentials.json deleted successfully": "完了：ファイル credentials.json が正常に削除されました"
+  "Completed: file credentials.json deleted successfully": "完了：ファイル credentials.json が正常に削除されました",
+  "": ""
 }
