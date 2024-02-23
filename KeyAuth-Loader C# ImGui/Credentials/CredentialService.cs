@@ -40,11 +40,11 @@ public class CredentialService
         if (File.Exists(FilePath)) 
         {
             File.Delete(FilePath);
-            Renderer.systemMessage = "Success: credentials.json deleted";
+            Renderer.SystemMessage = $"Success: {FilePath} deleted";
         }
         else
         {
-            Renderer.systemMessage = "Failed: unable to delete json file";
+            Renderer.SystemMessage = $"Failed: unable to find {FilePath}";
         }
     }
     

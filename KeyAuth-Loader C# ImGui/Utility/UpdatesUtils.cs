@@ -1,16 +1,18 @@
 ﻿using ImGuiNET;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using KeyAuth.Rendering;
 
 namespace KeyAuth.Utility
 {
     public class UpdatesUtils (api keyAuth)
     {
+        private LanguageSelector _ls = new LanguageSelector();
         public bool AutoUpdate()
         {
             if (keyAuth.response.message == "invalidver")
             {
-                keyAuth.response.message = "Invalid Client Version Detected";
+                keyAuth.response.message = _ls.GetString("Invalid Client Version Detected");
 
                 if (!string.IsNullOrEmpty(keyAuth.app_data.downloadLink))
                 {
@@ -75,14 +77,16 @@ namespace KeyAuth.Utility
         }
         
         
-        public void RestartApplication()
+        public async Task RestartApplication()
         {
             try
             {
+                Renderer.SystemMessage = "Success: Loader will be restarted, please wait few seconds";
                 Process currentProcess = Process.GetCurrentProcess();
                 string? exePath = currentProcess.MainModule?.FileName;
 
                 if (exePath == null) return;
+                await Task.Delay(2000);
                 Process.Start(new ProcessStartInfo
                 {
                     Arguments = $"/C choice /C Y /N /D Y /T 2 & start \"\" \"{exePath}\"",

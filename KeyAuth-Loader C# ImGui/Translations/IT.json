@@ -4,9 +4,9 @@
   "Status:": "Stato:",
   "Toggle FPS": "Attiva/Disattiva FPS",
   "Restart Loader": "Riavvia Loader",
-  "Login": "Accedi",
+  "Login": "Accesso con licenza",
   "Credentials Login": "Accesso credenziali",
-  "License Login": "Accedi",
+  "License Login": "Accesso con licenza",
   "Register User": "Registra utente",
   "Settings": "Impostazioni",
   "Username": "Nome Utente",
@@ -33,5 +33,6 @@
   "Logout": "Logout",
   "Press a button to start the cheat, make sure to start the game first.": "Premi un bottone per scegliere il trucco, assicurati di avviare prima il gioco",
   "Language:": "Lingua:",
-  "Loader Theme": "Tema Loader:"
+  "Loader Theme": "Tema Loader:",
+  "Invalid Client Version Detected": "Rilevata Versione Invalida Del Client"
 }

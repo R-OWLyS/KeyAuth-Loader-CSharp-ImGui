@@ -9,7 +9,7 @@ namespace KeyAuth.Rendering;
 
 public class Renderer(api keyAuth, CredentialService credentialService) : Overlay
 {
-    public static string systemMessage = "";
+    public static string SystemMessage = "";
     
     private bool _isUpdateAvailable;
     private bool _showCheatListTab;
@@ -43,13 +43,13 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
         
         ReplaceFont(config =>
         {
-            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath, 15.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
+            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
             config->MergeMode = 1;
             config->OversampleH = 1;
             config->OversampleV = 1;
             config->PixelSnapH = 1;
-            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 15.5f, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
-            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 15.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon());
+            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 14.5f, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
+            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon());
         });
         
         if (!_isUpdateAvailable)
@@ -63,7 +63,7 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
     protected override void Render()
     {
 
-        ImGui.SetNextWindowSize(new Vector2(670, 400), ImGuiCond.Once);
+        ImGui.SetNextWindowSize(new Vector2(690, 420), ImGuiCond.Once);
         ImGui.SetNextWindowPos(new Vector2(0, 0), ImGuiCond.Once);
         
         ImGui.Begin("KeyAuth - Loader C#", ref _isLoaderShown, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize);
@@ -74,7 +74,7 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
             {
                 if (!_isUpdateAvailable && !_authUtils.isLoginSuccessful &&!_showCheatListTab)
                 {   
-                    string[] localizedTabNames = _ls.GetArray(_tabNames);
+                    var localizedTabNames = _ls.GetArray(_tabNames);
                     VerticalTabBar.Render(localizedTabNames, ref _tab);  
                 }
                 
@@ -134,11 +134,11 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
         ImGui.End();
     }
 
-    private void RenderSystemMessage()
+    private static void RenderSystemMessage()
     {
         ImGui.Spacing();
-        ImGui.TextColored(systemMessage.Contains("success") ? Colors.defaultGreen : Colors.defaultRed,
-            $"{systemMessage}");
+        ImGui.TextColored(SystemMessage.Contains("Success") ? Colors.defaultGreen : Colors.defaultRed,
+            $"{SystemMessage}");
     }
     
     private void RenderInfoTab()

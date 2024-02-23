@@ -1,16 +1,16 @@
-using ClickableTransparentOverlay;
 using ImGuiNET;
-using KeyAuth.Rendering;
 using Newtonsoft.Json;
+
+namespace KeyAuth.Utility;
 
 public class LanguageSelector
 {
     private int _currentLanguageIndex;
-    private readonly string[] _languageOptions = { "English", "Italian" ,"Spanish", "German", "Chinese", "Polish", "Russian" };
-    private readonly string[] _languageCodes = { "EN", "IT", "ES", "DE", "ZH", "PL", "RU"};
-    private string _currentLanguage = string.Empty;
+    private readonly string[] _languageOptions = new[] { "English", "Italian" ,"Spanish", "German", "Chinese", "Polish", "Russian" };
+    private readonly string[] _languageCodes = new[] { "EN", "IT", "ES", "DE", "ZH", "PL", "RU"};
+    private static string _currentLanguage = string.Empty;
 
-    private readonly Dictionary<string, Dictionary<string, string>?> _translations = new();
+    private static readonly Dictionary<string, Dictionary<string, string>?> _translations = new();
 
     private const string DefaultLanguage = "EN";
     
