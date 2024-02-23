@@ -50,6 +50,7 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
             config->PixelSnapH = 1;
             ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 14.5f, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
             ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon());
+            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesJapanese());
         });
         
         if (!_isUpdateAvailable)
@@ -63,14 +64,14 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
     protected override void Render()
     {
 
-        ImGui.SetNextWindowSize(new Vector2(690, 420), ImGuiCond.Once);
+        ImGui.SetNextWindowSize(new Vector2(750, 420), ImGuiCond.Once);
         ImGui.SetNextWindowPos(new Vector2(0, 0), ImGuiCond.Once);
         
         ImGui.Begin("KeyAuth - Loader C#", ref _isLoaderShown, ImGuiWindowFlags.NoCollapse | ImGuiWindowFlags.NoResize);
         {
             RenderStatusTab();
             
-            ImGui.BeginChild("#1", new Vector2(200, -29), ImGuiChildFlags.Border);
+            ImGui.BeginChild("#1", new Vector2(230, -29), ImGuiChildFlags.Border);
             {
                 if (!_isUpdateAvailable && !_authUtils.isLoginSuccessful &&!_showCheatListTab)
                 {   
@@ -78,7 +79,7 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
                     VerticalTabBar.Render(localizedTabNames, ref _tab);  
                 }
                 
-                ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 95);
+                ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 110);
                 RenderInfoTab();
             }
             ImGui.EndChild();
@@ -134,11 +135,10 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
         ImGui.End();
     }
 
-    private static void RenderSystemMessage()
+    private void RenderSystemMessage()
     {
         ImGui.Spacing();
-        ImGui.TextColored(SystemMessage.Contains("Success") ? Colors.defaultGreen : Colors.defaultRed,
-            $"{SystemMessage}");
+        ImGui.TextColored(SystemMessage.Contains("Success") ? Colors.defaultGreen : Colors.defaultRed, $"{_ls.GetString(SystemMessage)}");
     }
     
     private void RenderInfoTab()
@@ -165,13 +165,13 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
         {
             ImGui.Text(_ls.GetString($"Status:"));
             ImGui.SameLine();
-            ImGui.TextColored(Colors.defaultRed, keyAuth.response.message);
+            ImGui.TextColored(Colors.defaultRed, _ls.GetString(keyAuth.response.message));
         }
         else
         {
             ImGui.Text(_ls.GetString($"Status:"));
             ImGui.SameLine();
-            ImGui.TextColored(Colors.defaultGreen, keyAuth.response.message);
+            ImGui.TextColored(Colors.defaultGreen, _ls.GetString(keyAuth.response.message));
         }
     }
 
@@ -240,7 +240,6 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
         ImGui.Spacing();
         if (!ImGui.Button(_ls.GetString("Register Account"))) return;
         _authUtils.PerformRegisterUser();
-        _tab = 0;
     }        
         
     private void RenderUpdateTab()
@@ -320,7 +319,7 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
 
     private async void RenderCheatListTab()
     {
-        ImGui.TextColored(Colors.defaultGreen, _ls.GetString("Press a button to start the cheat, make sure to start the game first."));
+        ImGui.TextColored(Colors.defaultGreen, _ls.GetString("Press a button to start the cheat\n make sure to start the game first."));
         ImGui.NewLine();
         CheatList.Render(_cheatNames, ref _cheat);
         

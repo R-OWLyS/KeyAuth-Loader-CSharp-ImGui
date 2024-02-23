@@ -6,8 +6,8 @@ namespace KeyAuth.Utility;
 public class LanguageSelector
 {
     private int _currentLanguageIndex;
-    private readonly string[] _languageOptions = new[] { "English", "Italian" ,"Spanish", "German", "Chinese", "Polish", "Russian" };
-    private readonly string[] _languageCodes = new[] { "EN", "IT", "ES", "DE", "ZH", "PL", "RU"};
+    private readonly string[] _languageOptions = new[] { "English", "Italian" ,"Spanish", "German", "Chinese", "Polish", "Russian", "Swedish", "Japanese" };
+    private readonly string[] _languageCodes = new[] { "EN", "IT", "ES", "DE", "ZH", "PL", "RU", "SW", "JA"};
     private static string _currentLanguage = string.Empty;
 
     private static readonly Dictionary<string, Dictionary<string, string>?> _translations = new();
@@ -29,6 +29,8 @@ public class LanguageSelector
         LoadLanguageStrings("ZH");
         LoadLanguageStrings("PL");
         LoadLanguageStrings("RU");
+        LoadLanguageStrings("SW");
+        LoadLanguageStrings("JA");
     }
 
     private void LoadLanguageStrings(string languageCode)
@@ -36,7 +38,7 @@ public class LanguageSelector
         try
         {
             var jsonPath = Path.Combine("Translations", $"{languageCode}.json");
-            Console.WriteLine($"-> {jsonPath}");
+            Console.WriteLine($"loaded translation -> {languageCode} from -> {jsonPath}");
             var jsonString = File.ReadAllText(jsonPath);
             _translations[languageCode] = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
         }

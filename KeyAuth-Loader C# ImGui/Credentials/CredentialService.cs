@@ -1,8 +1,6 @@
-﻿using ImGuiNET;
-using KeyAuth.Rendering;
+﻿using KeyAuth.Rendering;
 using KeyAuth.Utility;
 using Newtonsoft.Json.Linq;
-using KeyAuth.Rendering.Theme;
 
 namespace KeyAuth.Credentials;
 
@@ -44,7 +42,7 @@ public class CredentialService
         }
         else
         {
-            Renderer.SystemMessage = $"Failed: unable to find {FilePath}";
+            Renderer.SystemMessage = $"Error: unable to find {FilePath}";
         }
     }
     

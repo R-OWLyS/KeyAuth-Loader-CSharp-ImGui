@@ -1,18 +1,22 @@
 ﻿using ImGuiNET;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using System.Runtime.InteropServices;
 using KeyAuth.Rendering;
+using KeyAuth.Rendering.Theme;
+using SixLabors.ImageSharp;
 
 namespace KeyAuth.Utility
 {
     public class UpdatesUtils (api keyAuth)
     {
-        private LanguageSelector _ls = new LanguageSelector();
+        [DllImport("user32.dll", CharSet = CharSet.Unicode)]
+        private static extern int MessageBox(IntPtr hWnd, string text, string caption, uint type);
         public bool AutoUpdate()
         {
             if (keyAuth.response.message == "invalidver")
             {
-                keyAuth.response.message = _ls.GetString("Invalid Client Version Detected");
+                keyAuth.response.message = "Invalid Client Version Detected";
 
                 if (!string.IsNullOrEmpty(keyAuth.app_data.downloadLink))
                 {
@@ -20,12 +24,13 @@ namespace KeyAuth.Utility
                 }
                 else
                 {
-                    ImGui.Text("Status: The version of this program does not match the one online, and the online download link is not set. Please contact the developer for assistance.");
+                    MessageBox(IntPtr.Zero, " The version of this program does not match the one online, and the online download link is not set. Please contact the developer for assistance.", "Status", 0);
                     Environment.Exit(0);
                 }
             }
             return false;
         }
+        
 
         public void PerformUpdate()
         {
