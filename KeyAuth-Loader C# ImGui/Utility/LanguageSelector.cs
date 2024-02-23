@@ -1,4 +1,6 @@
+using ClickableTransparentOverlay;
 using ImGuiNET;
+using KeyAuth.Rendering;
 using Newtonsoft.Json;
 
 public class LanguageSelector
@@ -12,8 +14,10 @@ public class LanguageSelector
 
     private const string DefaultLanguage = "EN";
     
-    public LanguageSelector()
+    private Renderer _renderer;
+    public LanguageSelector(Renderer renderer)
     {
+        _renderer = renderer;
         LoadTranslations();
         SetLanguage(DefaultLanguage);
     }
@@ -46,6 +50,19 @@ public class LanguageSelector
 
     private void SetLanguage(string languageCode)
     {
+        switch (languageCode)
+        {
+            case "RU":
+                _renderer.ReplaceFont("Fonts\\arial-unicode-ms.ttf", 16, FontGlyphRangeType.Cyrillic);
+                break;
+            case "ZH":
+                _renderer.ReplaceFont("Fonts\\arial-unicode-ms.ttf", 16, FontGlyphRangeType.ChineseFull);
+                break;
+            default:
+                _renderer.ReplaceFont("C:\\Windows\\Fonts\\NirmalaB.ttf", 16, FontGlyphRangeType.English);
+                break;
+        }
+
         _currentLanguage = _translations.ContainsKey(languageCode) ? languageCode : DefaultLanguage;
     }
 

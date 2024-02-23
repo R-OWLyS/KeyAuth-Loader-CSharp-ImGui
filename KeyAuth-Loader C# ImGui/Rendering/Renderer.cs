@@ -7,8 +7,16 @@ using KeyAuth.Rendering.Theme;
 
 namespace KeyAuth.Rendering;
 
-public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
+public class Renderer : Overlay
 {
+    public Renderer(api keyAuth,CredentialService credentialService)
+    {
+        _ls  = new LanguageSelector(this);
+        _keyAuth = keyAuth;
+        _credentialService = credentialService;
+        _updatesUtils = new UpdatesUtils(keyAuth);
+        _authUtils = new AuthUtils(credentialService,keyAuth);
+    }
     public static string systemMessage = "";
     
     private bool _isUpdateAvailable;
@@ -19,41 +27,44 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     private int _tab;
 
     private readonly DateTime _connectionTime = DateTime.Now;
-
-    private readonly UpdatesUtils _updatesUtils = new(keyAuth);
-    private readonly AuthUtils _authUtils = new(credentialService,keyAuth);
+    private readonly api _keyAuth;
+    private readonly CredentialService _credentialService;
+    private readonly UpdatesUtils _updatesUtils;
+    private readonly AuthUtils _authUtils;
     
     private readonly ThemeSelector _themeSelector = new ThemeSelector();
     private readonly CheckProcess _checkProcess = new CheckProcess();
-    private readonly LanguageSelector _ls = new LanguageSelector();
+    private readonly LanguageSelector _ls;
 
     private readonly string[] _tabNames = new[] { "Credentials Login", "License Login", "Register User", "Settings" };
     private readonly string[] _cheatNames = new[] { "CS2", "Dead Island 2", "RoboQuest" };
     
     private readonly string _fontPath = $"{AppDomain.CurrentDomain.BaseDirectory}Fonts\\LEMONMILKLight.otf";
-    //private readonly string _fontPath2 = $"{AppDomain.CurrentDomain.BaseDirectory}Fonts\\arial-unicode-ms.ttf";
+    private readonly string _fontPath2 = $"{AppDomain.CurrentDomain.BaseDirectory}Fonts\\arial-unicode-ms.ttf";
 
     
     protected override unsafe Task PostInitialized()
     { 
-        keyAuth.init();
+        _keyAuth.init();
         _checkProcess.CheckCurrentProcess();
         _themeSelector.SetSelectedTheme();
         _isUpdateAvailable = _updatesUtils.AutoUpdate();
         
-        ReplaceFont(config =>
-        {
-            if (!File.Exists(_fontPath))
-            {
-                ReplaceFont(@"C:\Windows\Fonts\NirmalaB.ttf", 16, FontGlyphRangeType.English);
-            }
-            else
-            {
-                ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath, 13.5f, config, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
-                //ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 13.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
-                //ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 13.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon());
-            }
-        });
+        // ReplaceFont(config =>
+        // {
+        //    // ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 13.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
+        //     // if (!File.Exists(_fontPath))
+        //     // {
+        //     //     ReplaceFont(@"C:\Windows\Fonts\NirmalaB.ttf", 16, FontGlyphRangeType.English);
+        //    // ReplaceFont(@"C:\Windows\Fonts\NirmalaB.ttf", 16, FontGlyphRangeType.Cyrillic);
+        //     // }
+        //     // else
+        //     // {
+        //     //     ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath, 13.5f, config, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
+        //     //     ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 13.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
+        //     //     //ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 13.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon());
+        //     // }
+        // });
         
         if (!_isUpdateAvailable)
         {
@@ -158,23 +169,23 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         ImGui.TextColored(Colors.defaultGreen, $"{_connectionTime}");
         ImGui.Text(_ls.GetString("Client Version:"));
         ImGui.SameLine();
-        ImGui.TextColored(Colors.defaultGreen, $"{keyAuth.version}");
+        ImGui.TextColored(Colors.defaultGreen, $"{_keyAuth.version}");
         ImGui.Spacing();
     }
 
     private void RenderStatusTab()
     {
-        if (!keyAuth.response.success)
+        if (!_keyAuth.response.success)
         {
             ImGui.Text(_ls.GetString($"Status:"));
             ImGui.SameLine();
-            ImGui.TextColored(Colors.defaultRed, keyAuth.response.message);
+            ImGui.TextColored(Colors.defaultRed, _keyAuth.response.message);
         }
         else
         {
             ImGui.Text(_ls.GetString($"Status:"));
             ImGui.SameLine();
-            ImGui.TextColored(Colors.defaultGreen, keyAuth.response.message);
+            ImGui.TextColored(Colors.defaultGreen, _keyAuth.response.message);
         }
     }
 
@@ -189,7 +200,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         
         if (ImGui.Button(_ls.GetString("Delete Saved Creds")))
         {
-            credentialService.ClearCredentials();
+            _credentialService.ClearCredentials();
         }
         
         if (ImGui.Button(_ls.GetString("Check Session")))
@@ -207,9 +218,9 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     {
         ImGui.Spacing();
         ImGui.Text(_ls.GetString("Username"));
-        ImGui.InputText("##Username", ref credentialService.username, 100);
+        ImGui.InputText("##Username", ref _credentialService.username, 100);
         ImGui.Text(_ls.GetString("Password"));
-        ImGui.InputText("##Password", ref credentialService.password, 100, ImGuiInputTextFlags.Password);
+        ImGui.InputText("##Password", ref _credentialService.password, 100, ImGuiInputTextFlags.Password);
         ImGui.Spacing();
         if (ImGui.Button(_ls.GetString("Login")))
         {
@@ -221,7 +232,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     {
         ImGui.Spacing();
         ImGui.Text(_ls.GetString("License"));
-        ImGui.InputText("##LicenseKey", ref credentialService.key, 100, ImGuiInputTextFlags.Password);
+        ImGui.InputText("##LicenseKey", ref _credentialService.key, 100, ImGuiInputTextFlags.Password);
         ImGui.Spacing();
         if (ImGui.Button(_ls.GetString("License Login")))
         {
@@ -233,13 +244,13 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
     {
         ImGui.Spacing();
         ImGui.Text(_ls.GetString("Username"));
-        ImGui.InputText("##Username", ref credentialService.username, 100);
+        ImGui.InputText("##Username", ref _credentialService.username, 100);
         ImGui.Text(_ls.GetString("Password"));
-        ImGui.InputText("##Password", ref credentialService.password, 100, ImGuiInputTextFlags.Password);            
+        ImGui.InputText("##Password", ref _credentialService.password, 100, ImGuiInputTextFlags.Password);            
         ImGui.Text(_ls.GetString("License"));
-        ImGui.InputText("##License", ref credentialService.key, 100, ImGuiInputTextFlags.Password);            
+        ImGui.InputText("##License", ref _credentialService.key, 100, ImGuiInputTextFlags.Password);            
         ImGui.Text(_ls.GetString("Email"));
-        ImGui.InputText("##Email", ref credentialService.email, 100);
+        ImGui.InputText("##Email", ref _credentialService.email, 100);
         ImGui.Spacing();
         if (!ImGui.Button(_ls.GetString("Register Account"))) return;
         _authUtils.PerformRegisterUser();
@@ -274,21 +285,21 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         ImGui.Spacing();
         ImGui.Text(_ls.GetString("Created at:"));
         ImGui.SameLine();
-        ImGui.TextColored(Colors.defaultGreen,$"{TimeClock.UnixTimeToDateTime(long.Parse(keyAuth.user_data.createdate))}");        
+        ImGui.TextColored(Colors.defaultGreen,$"{TimeClock.UnixTimeToDateTime(long.Parse(_keyAuth.user_data.createdate))}");        
         ImGui.Text(_ls.GetString("Last login at:"));
         ImGui.SameLine();
-        ImGui.TextColored(Colors.defaultGreen,$"{TimeClock.UnixTimeToDateTime(long.Parse(keyAuth.user_data.lastlogin))}");
+        ImGui.TextColored(Colors.defaultGreen,$"{TimeClock.UnixTimeToDateTime(long.Parse(_keyAuth.user_data.lastlogin))}");
         
         ImGui.SetCursorPosY(ImGui.GetCursorPosY() + 25);
         ImGui.Text(_ls.GetString("Username:"));
         ImGui.SameLine();
-        ImGui.TextColored(Colors.defaultOrange, $"{keyAuth.user_data.username}");
+        ImGui.TextColored(Colors.defaultOrange, $"{_keyAuth.user_data.username}");
         ImGui.Text(_ls.GetString("IP Address:"));
         ImGui.SameLine();
-        ImGui.TextColored(Colors.defaultOrange, $"{keyAuth.user_data.ip}");
+        ImGui.TextColored(Colors.defaultOrange, $"{_keyAuth.user_data.ip}");
         ImGui.Text(_ls.GetString("Hardware ID:"));
         ImGui.SameLine();
-        ImGui.TextColored(Colors.defaultOrange, $"{keyAuth.user_data.hwid}");
+        ImGui.TextColored(Colors.defaultOrange, $"{_keyAuth.user_data.hwid}");
 
         ImGui.NewLine();
         ImGui.Text(_ls.GetString("Your subscription(s):"));
@@ -296,7 +307,7 @@ public class Renderer(api keyAuth,CredentialService credentialService) : Overlay
         ImGui.SameLine();
         ImGui.Spacing();
         
-        foreach (var t in keyAuth.user_data.subscriptions)
+        foreach (var t in _keyAuth.user_data.subscriptions)
         {
             ImGui.Text(_ls.GetString($"Subscription name:"));
             ImGui.SameLine();
