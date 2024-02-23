@@ -37,7 +37,7 @@
   "Invalid Client Version Detected": "Обнаружена недопустимая версия клиента",
   "Initialized": "Инициализировано",
   "Logged In (Auto-Login)": "Вход выполнен (автовход)",
-  "Logged In!": "Вход выполнен!",
+  "Logged in!": "Вход выполнен!",
   "User Registered Successfully!": "Пользователь успешно зарегистрирован!",
   "Invalid username": "Неверное имя пользователя",
   "Username already taken, choose a different one": "Имя пользователя уже занято, выберите другое",

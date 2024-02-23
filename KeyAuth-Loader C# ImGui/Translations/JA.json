@@ -37,7 +37,7 @@
   "Invalid Client Version Detected": "無効なクライアントバージョンが検出されました",
   "Initialized": "初期化されました",
   "Logged In (Auto-Login)": "ログイン済み（自動ログイン）",
-  "Logged In!": "ログイン済み！",
+  "Logged in!": "ログイン済み！",
   "User Registered Successfully!": "ユーザーが正常に登録されました！",
   "Invalid username": "無効なユーザー名",
   "Username already taken, choose a different one": "ユーザー名は既に使用されています。別のユーザー名を選択してください。",

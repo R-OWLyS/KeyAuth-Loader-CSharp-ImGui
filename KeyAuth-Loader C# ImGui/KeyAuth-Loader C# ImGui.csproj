@@ -11,7 +11,12 @@
 	<GenerateAssemblyInfo>false</GenerateAssemblyInfo>
 	<PublishAot>true</PublishAot>
 	<AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+	<ApplicationIcon>Assets\loader.ico</ApplicationIcon>
   </PropertyGroup>
+
+  <ItemGroup>
+    <Content Include="Assets\loader.ico" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="ClickableTransparentOverlay" Version="9.1.0" />

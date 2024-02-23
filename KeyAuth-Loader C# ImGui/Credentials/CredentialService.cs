@@ -38,7 +38,7 @@ public class CredentialService
         if (File.Exists(FilePath)) 
         {
             File.Delete(FilePath);
-            Renderer.SystemMessage = $"Success: {FilePath} deleted";
+            Renderer.SystemMessage = $"Completed: file {FilePath} deleted successfully";
         }
         else
         {
