@@ -1,9 +1,12 @@
 using ImGuiNET;
+using KeyAuth.Utility;
 
 namespace KeyAuth.Rendering.Theme;
 
 public class ThemeSelector()
 {
+    private readonly LanguageSelector _ls = new();
+    
     private readonly string[] _themeOptions = new[]
     {
         "Default", "Comfy", "Darcula", "Dark Ruda", "Deep Dark", "Discord", "Future Dark", "Gold", "Material Flat",
@@ -28,14 +31,12 @@ public class ThemeSelector()
     
     public void Selector()
     {
-        ImGui.Text("Style:");
+        ImGui.Text(_ls.GetString("Theme:"));
         ImGui.SameLine();
         var selectedStyleIndex = (int)_selectedStyle;
-        if (ImGui.Combo("##Theme", ref selectedStyleIndex, _themeOptions, _themeOptions.Length))
-        {
-            _selectedStyle = (ImGuiStyleType)selectedStyleIndex;
-            SetSelectedTheme();
-        }
+        if (!ImGui.Combo("##Theme", ref selectedStyleIndex, _themeOptions, _themeOptions.Length)) return;
+        _selectedStyle = (ImGuiStyleType)selectedStyleIndex;
+        SetSelectedTheme();
     }
     
     public void SetSelectedTheme()

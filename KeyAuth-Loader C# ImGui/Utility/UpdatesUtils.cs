@@ -3,8 +3,6 @@ using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using System.Runtime.InteropServices;
 using KeyAuth.Rendering;
-using KeyAuth.Rendering.Theme;
-using SixLabors.ImageSharp;
 
 namespace KeyAuth.Utility
 {
@@ -22,11 +20,8 @@ namespace KeyAuth.Utility
                 {
                     return true;
                 }
-                else
-                {
-                    MessageBox(IntPtr.Zero, " The version of this program does not match the one online, and the online download link is not set. Please contact the developer for assistance.", "Status", 0);
-                    Environment.Exit(0);
-                }
+                MessageBox(IntPtr.Zero, " The version of this program does not match the one online, and the online download link is not set. Please contact the developer for assistance.", "Status", 0);
+                Environment.Exit(0);
             }
             return false;
         }
@@ -55,7 +50,7 @@ namespace KeyAuth.Utility
         {
             try
             {
-                Process currentProcess = Process.GetCurrentProcess();
+                Process.GetCurrentProcess();
                 string? exePath = Process.GetCurrentProcess().MainModule?.FileName;
                 string rand = Guid.NewGuid().ToString();
                 exePath = Path.Combine(Path.GetDirectoryName(exePath) ?? string.Empty, $"{rand}.exe");
@@ -67,7 +62,7 @@ namespace KeyAuth.Utility
                 Process.Start(exePath);
                 Process.Start(new ProcessStartInfo
                 {
-                    Arguments = $"/C choice /C Y /N /D Y /T 3 & Del \"{System.Reflection.Assembly.GetEntryAssembly()?.Location}\"",
+                    Arguments = $"/C choice /C Y /N /D Y /T 3 & Del \"{Process.GetCurrentProcess().MainModule?.FileName}\"",
                     WindowStyle = ProcessWindowStyle.Hidden,
                     CreateNoWindow = true,
                     FileName = "cmd.exe"

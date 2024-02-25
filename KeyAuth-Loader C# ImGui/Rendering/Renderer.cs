@@ -14,26 +14,25 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
     private bool _isUpdateAvailable;
     private bool _showCheatListTab;
     private bool _isLoaderShown = true;
-    private bool _showFps = false;
+    private bool _showFps;
     private int _cheat;
     private int _tab;
-
+    
     private readonly DateTime _connectionTime = DateTime.Now;
     private readonly UpdatesUtils _updatesUtils = new(keyAuth);
     private readonly AuthUtils _authUtils = new(credentialService,keyAuth);
     
-    private readonly ThemeSelector _themeSelector = new ThemeSelector();
-    private readonly CheckProcess _checkProcess = new CheckProcess();
+    private readonly ThemeSelector _themeSelector = new();
+    private readonly CheckProcess _checkProcess = new();
     private readonly LanguageSelector _ls = new();
 
     private readonly string[] _tabNames = new[] { "Credentials Login", "License Login", "Register User", "Settings" };
     private readonly string[] _cheatNames = new[] { "CS2", "Dead Island 2", "RoboQuest" };
-    
-    private readonly string _fontPath = $"Fonts\\LEMONMILKLight.otf";
-    private readonly string _fontPath2 = $"Fonts\\arial-unicode-ms.ttf";
+
+    private const string FontPath = $"Fonts\\LEMONMILKLight.otf";
+    private const string FontPath2 = $"Fonts\\arial-unicode-ms.ttf";
 
 
-    
     protected override unsafe Task PostInitialized()
     { 
         keyAuth.init();
@@ -43,14 +42,14 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
         
         ReplaceFont(config =>
         {
-            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
+            ImGui.GetIO().Fonts.AddFontFromFileTTF(FontPath, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesDefault());
             config->MergeMode = 1;
             config->OversampleH = 1;
             config->OversampleV = 1;
             config->PixelSnapH = 1;
-            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 14.5f, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
-            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon());
-            ImGui.GetIO().Fonts.AddFontFromFileTTF(_fontPath2, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesJapanese());
+            ImGui.GetIO().Fonts.AddFontFromFileTTF(FontPath2, 14.5f, config, ImGui.GetIO().Fonts.GetGlyphRangesCyrillic());
+            ImGui.GetIO().Fonts.AddFontFromFileTTF(FontPath2, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesChineseSimplifiedCommon());
+            ImGui.GetIO().Fonts.AddFontFromFileTTF(FontPath2, 14.8f, config, ImGui.GetIO().Fonts.GetGlyphRangesJapanese());
         });
         
         if (!_isUpdateAvailable)
@@ -63,7 +62,6 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
     
     protected override void Render()
     {
-
         ImGui.SetNextWindowSize(new Vector2(750, 420), ImGuiCond.Once);
         ImGui.SetNextWindowPos(new Vector2(0, 0), ImGuiCond.Once);
         
@@ -73,7 +71,7 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
             
             ImGui.BeginChild("#1", new Vector2(230, -29), ImGuiChildFlags.Border);
             {
-                if (!_isUpdateAvailable && !_authUtils.isLoginSuccessful &&!_showCheatListTab)
+                if (!_isUpdateAvailable && !_authUtils.isLoginSuccessful && !_showCheatListTab)
                 {   
                     var localizedTabNames = _ls.GetArray(_tabNames);
                     VerticalTabBar.Render(localizedTabNames, ref _tab);  
@@ -83,9 +81,9 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
                 RenderInfoTab();
             }
             ImGui.EndChild();
-
+            
             ImGui.SameLine();
-
+            
             ImGui.BeginChild("#2", new Vector2(0, -29), ImGuiChildFlags.Border);
             {
                 if (_isUpdateAvailable)
@@ -121,16 +119,13 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
                     RenderSuccessTab();
                 }
                 
+                if (!_isLoaderShown)
+                {
+                    Close();
+                }
             }
             ImGui.EndChild();
-            
             _ls.RenderLanguageSelector();
-            
-            if (_isLoaderShown == false)
-            {
-                this.Close();
-            }
-
         }
         ImGui.End();
     }
@@ -178,25 +173,25 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
     private void RenderSettingsTab()
     {
         ImGui.Checkbox(_ls.GetString("Toggle FPS"), ref _showFps);
-        
+        ImGui.Spacing();
         if (ImGui.Button(_ls.GetString("Restart Loader")))
         {
             _updatesUtils.RestartApplication();
         }
-        
+        ImGui.Spacing();
         if (ImGui.Button(_ls.GetString("Delete Saved Creds")))
         {
             credentialService.ClearCredentials();
         }
-        
+        ImGui.Spacing();
         if (ImGui.Button(_ls.GetString("Check Session")))
         {
             _authUtils.CheckSession();
             ImGui.SameLine();
         }
-        
+        ImGui.Spacing();
         _themeSelector.Selector();
-        
+        ImGui.Spacing();
         RenderSystemMessage();
     }
 
