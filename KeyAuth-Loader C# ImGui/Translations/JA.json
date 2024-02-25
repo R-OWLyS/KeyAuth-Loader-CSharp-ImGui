@@ -36,7 +36,7 @@
   "Restart Loader": "ローダーを再起動",
   "Settings": "設定",
   "Status:": "ステータス：",
-  "Success: Loader will be restarted, please wait a few seconds": "成功：ローダーが再起動されます。数秒お待ちください",
+  "Completed: Loader will be restarted, please wait few seconds": "成功：ローダーが再起動されます。数秒お待ちください",
   "Subscription name:": "サブスクリプション名：",
   "The current client version is obsolete.\nPlease download the new version to be able to connect again.": "現在のクライアントバージョンは非推奨です。\n再び接続できるように新しいバージョンをダウンロードしてください。",
   "Theme:": "テーマ：",

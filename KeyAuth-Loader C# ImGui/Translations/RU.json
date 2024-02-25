@@ -36,7 +36,7 @@
   "Restart Loader": "Перезапустить загрузчик",
   "Settings": "Настройки",
   "Status:": "Статус:",
-  "Success: Loader will be restarted, please wait a few seconds": "Успех: загрузчик будет перезапущен, подождите несколько секунд",
+  "Completed: Loader will be restarted, please wait few seconds": "Успех: загрузчик будет перезапущен, подождите несколько секунд",
   "Subscription name:": "Имя подписки:",
   "The current client version is obsolete.\nPlease download the new version to be able to connect again.": "Текущая версия клиента устарела.\nПожалуйста, загрузите новую версию, чтобы снова подключиться.",
   "Theme:": "Тема:",

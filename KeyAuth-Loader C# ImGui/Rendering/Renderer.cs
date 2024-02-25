@@ -133,7 +133,7 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
     private void RenderSystemMessage()
     {
         ImGui.Spacing();
-        ImGui.TextColored(SystemMessage.Contains("Complete") ? Colors.defaultGreen : Colors.defaultRed, $"{_ls.GetString(SystemMessage)}");
+        ImGui.TextColored(SystemMessage.Contains("Complet") ? Colors.defaultGreen : Colors.defaultRed, $"{_ls.GetString(SystemMessage)}");
     }
     
     private void RenderInfoTab()
