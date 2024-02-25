@@ -1,8 +1,5 @@
 using ImGuiNET;
 using Newtonsoft.Json;
-using System;
-using System.IO;
-using System.Collections.Generic;
 
 namespace KeyAuth.Utility
 {
@@ -10,12 +7,12 @@ namespace KeyAuth.Utility
     {
         private int _currentLanguageIndex;
         private readonly string[] _languageOptions = new[] { "English", "Italian", "Spanish", "German", "Chinese", "Polish", "Russian", "Swedish", "Japanese" };
-        private readonly string[] _languageCodes = new[] { "EN", "IT", "ES", "DE", "ZH", "PL", "RU", "SW", "JA" };
+        private readonly string[] _languageCodes = new[] { "EN", "IT", "ES", "DE", "ZH", "PL", "RU", "SV", "JA" };
         private static string _currentLanguage = string.Empty;
 
-        private static readonly Dictionary<string, Dictionary<string, string>?> _translations = new();
+        private static readonly Dictionary<string, Dictionary<string, string>?> Translations = new();
 
-        private string DefaultLanguage = "EN";
+        private string _defaultLanguage = "EN";
 
         private void LoadDefaultFromJson()
         {
@@ -25,7 +22,7 @@ namespace KeyAuth.Utility
                 var jsonString = File.ReadAllText(jsonPath);
                 dynamic configObject = JsonConvert.DeserializeObject(jsonString)!;
                 
-                DefaultLanguage = configObject.Language;
+                _defaultLanguage = configObject.Language;
             }
             catch (Exception ex)
             {
@@ -37,7 +34,7 @@ namespace KeyAuth.Utility
         {
             LoadTranslations();
             LoadDefaultFromJson();
-            SetLanguage(DefaultLanguage);
+            SetLanguage(_defaultLanguage);
         }
 
         private void LoadTranslations()
@@ -54,7 +51,7 @@ namespace KeyAuth.Utility
             {
                 var jsonPath = Path.Combine("Translations", $"{languageCode}.json");
                 var jsonString = File.ReadAllText(jsonPath);
-                _translations[languageCode] = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
+                Translations[languageCode] = JsonConvert.DeserializeObject<Dictionary<string, string>>(jsonString);
             }
             catch (Exception ex)
             {
@@ -64,7 +61,7 @@ namespace KeyAuth.Utility
 
         private void SetLanguage(string languageCode)
         {
-            _currentLanguage = _translations.ContainsKey(languageCode) ? languageCode : DefaultLanguage;
+            _currentLanguage = Translations.ContainsKey(languageCode) ? languageCode : _defaultLanguage;
         }
 
         public void RenderLanguageSelector()
@@ -80,7 +77,7 @@ namespace KeyAuth.Utility
 
         public string GetString(string key)
         {
-            return _translations.TryGetValue(_currentLanguage, out var languageStrings) && languageStrings!.TryGetValue(key, out var value)
+            return Translations.TryGetValue(_currentLanguage, out var languageStrings) && languageStrings!.TryGetValue(key, out var value)
                 ? value
                 : $"MISSING TRANSLATION: {key}";
         }

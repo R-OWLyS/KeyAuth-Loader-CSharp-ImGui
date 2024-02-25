@@ -314,7 +314,7 @@ public class Renderer(api keyAuth, CredentialService credentialService) : Overla
 
     private async void RenderCheatListTab()
     {
-        ImGui.TextColored(Colors.defaultGreen, _ls.GetString("Press a button to start the cheat\n make sure to start the game first."));
+        ImGui.TextColored(Colors.defaultGreen, _ls.GetString("Press a button to start the cheat\nmake sure to start the game first."));
         ImGui.NewLine();
         CheatList.Render(_cheatNames, ref _cheat);
         

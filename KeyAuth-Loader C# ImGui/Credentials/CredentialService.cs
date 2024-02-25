@@ -45,5 +45,4 @@ public class CredentialService
             Renderer.SystemMessage = $"Error: unable to find {FilePath}";
         }
     }
-    
 }
